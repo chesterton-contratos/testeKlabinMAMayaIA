@@ -506,32 +506,7 @@
     }
     .maya-fab:hover::after{opacity:1}
 
-    /* topbar MAYA button — larger & more prominent */
-    .maya-top-btn{
-      position:relative;display:inline-flex;align-items:center;gap:9px;
-      border:1.5px solid rgba(0,200,150,.5);
-      background:linear-gradient(135deg,rgba(0,200,150,.22),rgba(59,130,246,.14));
-      color:var(--t1);border-radius:999px;padding:9px 18px 9px 10px;
-      font-size:.82rem;font-weight:900;letter-spacing:.9px;
-      box-shadow:0 0 22px rgba(0,200,150,.22), inset 0 1px 0 rgba(255,255,255,.14);
-      backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);
-      transition:transform .22s,box-shadow .22s,border-color .22s;
-      overflow:hidden;
-    }
-    .maya-top-btn::before{
-      content:'';position:absolute;inset:-1px;
-      background:linear-gradient(120deg,transparent,rgba(0,200,150,.28),rgba(59,130,246,.20),transparent);
-      transform:translateX(-120%);transition:transform .7s;pointer-events:none;
-    }
-    .maya-top-btn:hover{transform:translateY(-2px);border-color:rgba(0,200,150,.7);box-shadow:0 12px 34px rgba(0,200,150,.30), inset 0 1px 0 rgba(255,255,255,.18)}
-    .maya-top-btn:hover::before{transform:translateX(120%)}
-    .maya-orb{
-      width:28px;height:28px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;
-      background:radial-gradient(circle at 30% 30%,#ffffff 0,#bdfcef 18%,var(--acc) 44%,var(--blue) 100%);
-      color:#061018;font-size:.88rem;font-weight:900;box-shadow:0 0 18px rgba(0,200,150,.5);
-      animation:mayaPulse 2.6s ease-in-out infinite;flex-shrink:0;
-    }
-    .maya-top-text{position:relative;z-index:1}
+    /* MAYA topbar button removido — usar somente o botão flutuante (maya-fab) */
     @keyframes mayaPulse{0%,100%{transform:scale(1);filter:saturate(1)}50%{transform:scale(1.08);filter:saturate(1.25)}}
 
     /* placeholder */
@@ -626,10 +601,7 @@
     </div>
     <div class="topbar-right">
       <div class="status-pill"><div class="status-dot"></div><span>Online</span></div>
-      <button class="maya-top-btn" onclick="openMayaAnalyzer()" title="MAYA · Análise de Contrato">
-        <span class="maya-orb">M</span><span class="maya-top-text">MAYA</span>
-      </button>
-      <button class="btn-action" onclick="toggleTheme()" id="dash-theme-btn">☀️ Claro</button>
+<button class="btn-action" onclick="toggleTheme()" id="dash-theme-btn">☀️ Claro</button>
       <button class="btn-logout" onclick="handleLogout()">Sair</button>
     </div>
   </header>
