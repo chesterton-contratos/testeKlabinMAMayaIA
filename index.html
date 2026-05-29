@@ -349,32 +349,7 @@
 
 
     /* ══ MAYA · ANALISADOR DE CONTRATO ═══════════════════════ */
-    .maya-top-btn{
-      position:relative;display:inline-flex;align-items:center;gap:9px;
-      border:1px solid rgba(255,255,255,.18);
-      background:linear-gradient(135deg,rgba(255,255,255,.16),rgba(255,255,255,.05));
-      color:var(--t1);border-radius:999px;padding:7px 14px 7px 8px;
-      font-size:.74rem;font-weight:900;letter-spacing:.9px;
-      box-shadow:0 8px 26px rgba(0,0,0,.18), inset 0 1px 0 rgba(255,255,255,.14);
-      backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);
-      transition:transform .22s,box-shadow .22s,border-color .22s,color .22s;
-      overflow:hidden;
-    }
-    .maya-top-btn::before{
-      content:'';position:absolute;inset:-1px;
-      background:linear-gradient(120deg,transparent,rgba(0,200,150,.24),rgba(59,130,246,.18),transparent);
-      transform:translateX(-120%);transition:transform .7s;pointer-events:none;
-    }
-    .maya-top-btn:hover{transform:translateY(-2px);border-color:rgba(0,200,150,.45);box-shadow:0 12px 34px rgba(0,200,150,.18), inset 0 1px 0 rgba(255,255,255,.18)}
-    .maya-top-btn:hover::before{transform:translateX(120%)}
-    .maya-orb{
-      width:24px;height:24px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;
-      background:radial-gradient(circle at 30% 30%,#ffffff 0,#bdfcef 18%,var(--acc) 44%,var(--blue) 100%);
-      color:#061018;font-size:.78rem;font-weight:900;box-shadow:0 0 18px rgba(0,200,150,.38);
-      animation:mayaPulse 2.6s ease-in-out infinite;flex-shrink:0;
-    }
-    .maya-top-text{position:relative;z-index:1}
-    @keyframes mayaPulse{0%,100%{transform:scale(1);filter:saturate(1)}50%{transform:scale(1.08);filter:saturate(1.25)}}
+    /* (estilos .maya-top-btn e .maya-fab definidos abaixo em MAYA FLOATING BUTTON) */
 
     .maya-overlay{
       position:fixed;inset:0;z-index:9999;display:none;align-items:center;justify-content:center;
@@ -469,15 +444,23 @@
     }
     .maya-download.visible{display:inline-flex}
     .maya-report{
-      border:1px solid rgba(255,255,255,.12);border-radius:22px;padding:22px;
-      background:rgba(255,255,255,.06);color:var(--t2);font-size:.86rem;line-height:1.65;
+      border:1px solid rgba(255,255,255,.12);border-radius:22px;padding:26px;
+      background:rgba(255,255,255,.06);color:var(--t2);font-size:.88rem;line-height:1.72;
       box-shadow:inset 0 1px 0 rgba(255,255,255,.08);
+      max-height:54vh;overflow-y:auto;
     }
-    html.light .maya-report{border-color:rgba(15,23,42,.08);background:rgba(255,255,255,.72)}
-    .maya-report h1,.maya-report h2,.maya-report h3{color:var(--t1);margin:14px 0 8px;line-height:1.22}
-    .maya-report h1{font-size:1.35rem}.maya-report h2{font-size:1.05rem}.maya-report h3{font-size:.95rem}
-    .maya-report p{margin:0 0 10px}.maya-report ul{padding-left:20px;margin:8px 0 14px}.maya-report table{width:100%;border-collapse:collapse;margin:12px 0}
-    .maya-report th,.maya-report td{border:1px solid var(--bdr);padding:8px;text-align:left}.maya-report th{color:var(--t1);background:rgba(255,255,255,.06)}
+    .maya-report::-webkit-scrollbar{width:5px}.maya-report::-webkit-scrollbar-track{background:transparent}.maya-report::-webkit-scrollbar-thumb{background:var(--bdc);border-radius:4px}
+    html.light .maya-report{border-color:rgba(15,23,42,.08);background:rgba(255,255,255,.82)}
+    .maya-report article{display:block}
+    .maya-report h1,.maya-report h2,.maya-report h3{color:var(--t1);margin:16px 0 8px;line-height:1.22}
+    .maya-report h1{font-size:1.28rem;border-bottom:1px solid var(--bdr);padding-bottom:10px;margin-top:0}
+    .maya-report h2{font-size:1.05rem;color:var(--acc)}.maya-report h3{font-size:.92rem;color:#60a5fa}
+    .maya-report p{margin:0 0 11px}.maya-report ul,.maya-report ol{padding-left:22px;margin:8px 0 14px}
+    .maya-report li{margin:4px 0}
+    .maya-report table{width:100%;border-collapse:collapse;margin:14px 0;font-size:.82rem}
+    .maya-report th,.maya-report td{border:1px solid var(--bdr);padding:9px 12px;text-align:left;vertical-align:top}
+    .maya-report th{color:var(--t1);background:rgba(255,255,255,.07);font-size:.72rem;text-transform:uppercase;letter-spacing:.5px}
+    .maya-report tr:hover td{background:rgba(255,255,255,.03)}
     .maya-actions-bottom{display:flex;justify-content:flex-end;gap:10px;margin-top:18px;flex-wrap:wrap}
     .maya-secondary{
       border:1px solid rgba(255,255,255,.13);border-radius:12px;padding:10px 14px;
@@ -485,6 +468,71 @@
     }
     .maya-secondary:hover{border-color:var(--acc);color:var(--acc)}
     .maya-danger:hover{border-color:rgba(239,68,68,.45);color:var(--red)}
+
+    /* ══ MAYA FLOATING BUTTON ════════════════════════════ */
+    .maya-fab{
+      position:fixed;bottom:32px;right:32px;z-index:1100;
+      width:80px;height:80px;border-radius:50%;
+      background:linear-gradient(135deg,var(--acc),var(--blue));
+      border:none;cursor:pointer;
+      display:none;flex-direction:column;align-items:center;justify-content:center;gap:3px;
+      box-shadow:0 8px 36px rgba(0,200,150,.50),0 0 0 0 rgba(0,200,150,.25);
+      animation:mayaZoom 2.6s cubic-bezier(0.4,0,0.6,1) infinite;
+      color:#061018;transition:box-shadow .22s;
+    }
+    .maya-fab.visible{display:flex}
+    @keyframes mayaZoom{
+      0%,100%{transform:scale(1);box-shadow:0 8px 36px rgba(0,200,150,.50),0 0 0 0 rgba(0,200,150,.18)}
+      50%    {transform:scale(1.16);box-shadow:0 14px 48px rgba(0,200,150,.62),0 0 0 14px rgba(0,200,150,.07)}
+    }
+    .maya-fab:hover{animation:none;transform:scale(1.22);box-shadow:0 18px 52px rgba(0,200,150,.65),0 0 0 20px rgba(0,200,150,.10)}
+    .maya-fab-orb{
+      width:38px;height:38px;border-radius:50%;
+      background:radial-gradient(circle at 30% 28%,#ffffff 0,#bdfcef 18%,var(--acc) 52%,var(--blue) 100%);
+      color:#061018;font-size:1rem;font-weight:900;
+      display:flex;align-items:center;justify-content:center;
+      box-shadow:0 0 18px rgba(0,200,150,.5);
+    }
+    .maya-fab-label{font-size:.55rem;font-weight:900;letter-spacing:1.4px;text-transform:uppercase;color:#061018;margin-top:1px}
+
+    /* tooltip on fab */
+    .maya-fab::after{
+      content:'MAYA · Analisar Contrato';
+      position:absolute;right:calc(100% + 12px);top:50%;transform:translateY(-50%);
+      background:var(--bg2);border:1px solid var(--bdc);border-radius:10px;
+      padding:7px 13px;font-size:.72rem;font-weight:700;color:var(--t1);
+      white-space:nowrap;box-shadow:var(--s2);
+      opacity:0;pointer-events:none;transition:opacity .2s;
+    }
+    .maya-fab:hover::after{opacity:1}
+
+    /* topbar MAYA button — larger & more prominent */
+    .maya-top-btn{
+      position:relative;display:inline-flex;align-items:center;gap:9px;
+      border:1.5px solid rgba(0,200,150,.5);
+      background:linear-gradient(135deg,rgba(0,200,150,.22),rgba(59,130,246,.14));
+      color:var(--t1);border-radius:999px;padding:9px 18px 9px 10px;
+      font-size:.82rem;font-weight:900;letter-spacing:.9px;
+      box-shadow:0 0 22px rgba(0,200,150,.22), inset 0 1px 0 rgba(255,255,255,.14);
+      backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);
+      transition:transform .22s,box-shadow .22s,border-color .22s;
+      overflow:hidden;
+    }
+    .maya-top-btn::before{
+      content:'';position:absolute;inset:-1px;
+      background:linear-gradient(120deg,transparent,rgba(0,200,150,.28),rgba(59,130,246,.20),transparent);
+      transform:translateX(-120%);transition:transform .7s;pointer-events:none;
+    }
+    .maya-top-btn:hover{transform:translateY(-2px);border-color:rgba(0,200,150,.7);box-shadow:0 12px 34px rgba(0,200,150,.30), inset 0 1px 0 rgba(255,255,255,.18)}
+    .maya-top-btn:hover::before{transform:translateX(120%)}
+    .maya-orb{
+      width:28px;height:28px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;
+      background:radial-gradient(circle at 30% 30%,#ffffff 0,#bdfcef 18%,var(--acc) 44%,var(--blue) 100%);
+      color:#061018;font-size:.88rem;font-weight:900;box-shadow:0 0 18px rgba(0,200,150,.5);
+      animation:mayaPulse 2.6s ease-in-out infinite;flex-shrink:0;
+    }
+    .maya-top-text{position:relative;z-index:1}
+    @keyframes mayaPulse{0%,100%{transform:scale(1);filter:saturate(1)}50%{transform:scale(1.08);filter:saturate(1.25)}}
 
     /* placeholder */
     .placeholder{display:flex;align-items:center;justify-content:center;gap:8px;padding:32px;font-size:.82rem;color:var(--t3)}
@@ -679,6 +727,12 @@
     </div>
   </div>
 
+
+  <!-- ══ MAYA FLOATING BUTTON ════════════════════════════ -->
+  <button class="maya-fab" id="maya-fab" onclick="openMayaAnalyzer()" aria-label="Abrir MAYA · Análise de Contrato" title="MAYA · Análise de Contrato">
+    <div class="maya-fab-orb">M</div>
+    <span class="maya-fab-label">MAYA</span>
+  </button>
 
   <main class="main">
 
@@ -878,7 +932,7 @@ const CFG = {
   SELOS_URL   : 'https://docs.google.com/spreadsheets/d/e/2PACX-1vT6NoaJgH6klcA26ep4XoT-siziu6AM3VbEaClRYL5H54r9lPPYkfopr9c-V3cViBw5DY9wV5lWt_hX/pub?gid=1363654509&single=true&output=csv',
   PBI_GAXETA  : 'https://app.powerbi.com/view?r=eyJrIjoiMTAyZDgyNWMtMWE3NC00MGVmLWI5OGYtZjFiNTBhZDlkYzA1IiwidCI6ImYwMGQ1YzkwLTE2ZmQtNGUwNi1iY2Q2LWJmM2Y2MjEzNjVhMCJ9&pageName=a20643e19968caa5b1a6',
   PBI_SELOS   : 'https://app.powerbi.com/view?r=eyJrIjoiMGQxY2RlYjYtOGIwYi00NjJkLThlNjgtNGM2YjZiODRlZjdkIiwidCI6ImYwMGQ1YzkwLTE2ZmQtNGUwNi1iY2Q2LWJmM2Y2MjEzNjVhMCJ9&pageName=967f19c6065e9727d0bb',
-  MAYA_WEBHOOK_URL : 'COLE_AQUI_A_URL_DE_PRODUCAO_DO_WEBHOOK_N8N',
+  MAYA_WEBHOOK_URL : 'https://primary-production-1e9c2.up.railway.app/webhook/maya-analise-contrato-monte-alegre',
   REFRESH_MS  : 5 * 60 * 1000,
   TABLE_PREVIEW: 10,
   /* senha unica de acesso — altere se necessário */
@@ -988,6 +1042,9 @@ function onLoginSuccess(nome) {
   document.getElementById('login-screen').style.display='none';
   const dash=document.getElementById('dashboard');
   dash.style.display='flex'; dash.style.flexDirection='column';
+  /* Mostra botão flutuante MAYA */
+  const fab = document.getElementById('maya-fab');
+  if (fab) fab.classList.add('visible');
   setTimeout(() => {
     document.getElementById('pbi-frame-g').src = CFG.PBI_GAXETA;
     document.getElementById('pbi-frame-s').src = CFG.PBI_SELOS;
@@ -998,6 +1055,8 @@ function onLoginSuccess(nome) {
 
 function handleLogout() {
   if (S.timer) { clearInterval(S.timer); S.timer=null; }
+  const fab = document.getElementById('maya-fab');
+  if (fab) fab.classList.remove('visible');
   document.getElementById('login-screen').style.display='flex';
   document.getElementById('dashboard').style.display='none';
   document.getElementById('inp-email').value='';
