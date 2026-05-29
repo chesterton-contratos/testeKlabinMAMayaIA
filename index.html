@@ -1,0 +1,1893 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Portal Chesterton · Klabin Monte Alegre</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <style>
+    /* ══ TOKENS ═══════════════════════════════════════════════ */
+    :root { --tr: background .3s,color .3s,border-color .3s,box-shadow .3s; }
+    html.dark {
+      --bg0:#07090f; --bg1:#0d1520; --bg2:#111b2b; --bg3:#172338;
+      --inp:#0d1520;
+      --acc:#00c896; --acc2:#008f6b;
+      --blue:#3b82f6; --blue2:#1d4ed8;
+      --green:#22c55e; --orange:#f97316; --red:#ef4444; --purple:#a855f7; --amber:#f59e0b;
+      --t1:#f0f6ff; --t2:#9ab4cc; --t3:#4a6480;
+      --bdr:rgba(255,255,255,.07); --bdc:rgba(255,255,255,.10);
+      --s1:0 1px 4px rgba(0,0,0,.4); --s2:0 4px 16px rgba(0,0,0,.55); --s3:0 12px 40px rgba(0,0,0,.65);
+      --gl-a:0 0 40px rgba(0,200,150,.09); --gl-b:0 0 40px rgba(59,130,246,.08);
+    }
+    html.light {
+      --bg0:#edf2f7; --bg1:#ffffff; --bg2:#ffffff; --bg3:#f4f8fc;
+      --inp:#f1f5f9;
+      --acc:#009e76; --acc2:#007a5a;
+      --blue:#2563eb; --blue2:#1e40af;
+      --green:#16a34a; --orange:#ea580c; --red:#dc2626; --purple:#9333ea; --amber:#d97706;
+      --t1:#0a1628; --t2:#34506c; --t3:#7a96b0;
+      --bdr:#e0e8f0; --bdc:#d0dcea;
+      --s1:0 1px 4px rgba(0,0,0,.06); --s2:0 4px 16px rgba(0,0,0,.09); --s3:0 12px 40px rgba(0,0,0,.12);
+      --gl-a:0 0 40px rgba(0,158,118,.06); --gl-b:0 0 40px rgba(37,99,235,.05);
+    }
+
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:'Inter',sans-serif;background:var(--bg0);color:var(--t1);transition:var(--tr);min-height:100vh;overflow-x:hidden}
+    a{text-decoration:none} button{cursor:pointer;font-family:'Inter',sans-serif}
+
+    /* ══ ICON ANIMATIONS (enhanced) ══════════════════════════ */
+    @keyframes dropFall{
+      0%  {transform:translateY(0) scaleX(1) scaleY(1);opacity:.95}
+      40% {transform:translateY(5px) scaleX(.85) scaleY(1.2);opacity:.75}
+      80% {transform:translateY(11px) scaleX(.7) scaleY(.6);opacity:.3}
+      100%{transform:translateY(14px) scaleX(.5) scaleY(.1);opacity:0}
+    }
+    @keyframes dropPulse{
+      0%,100%{transform:scale(1);filter:drop-shadow(0 0 0px currentColor)}
+      50%    {transform:scale(1.10);filter:drop-shadow(0 0 4px currentColor)}
+    }
+    @keyframes shieldGlow{
+      0%,100%{filter:drop-shadow(0 0 1px currentColor);transform:scale(1)}
+      50%    {filter:drop-shadow(0 0 5px currentColor);transform:scale(1.06)}
+    }
+    @keyframes spinSlow{
+      from{transform:rotate(0deg)} to{transform:rotate(360deg)}
+    }
+    @keyframes wrenchRock{
+      0%,100%{transform:rotate(0deg)}
+      25%    {transform:rotate(12deg)}
+      75%    {transform:rotate(-8deg)}
+    }
+    @keyframes pulseActivity{
+      0%,100%{stroke-dashoffset:0;opacity:1}
+      50%    {stroke-dashoffset:6;opacity:.6}
+    }
+    @keyframes clockTick{
+      0%  {transform:rotate(0deg)}
+      95% {transform:rotate(330deg)}
+      100%{transform:rotate(360deg)}
+    }
+    @keyframes banShake{
+      0%,100%{transform:rotate(0deg)}
+      25%    {transform:rotate(6deg)}
+      75%    {transform:rotate(-6deg)}
+    }
+    .ico-animated{animation:dropPulse 2.2s ease-in-out infinite}
+    .ico-glow    {animation:shieldGlow 2.6s ease-in-out infinite}
+    .ico-wrench  {animation:wrenchRock 2.8s ease-in-out infinite}
+    .ico-clock   {}
+    .ico-clock .clock-hand{transform-origin:50% 75%;animation:clockTick 4s steps(12) infinite}
+    .ico-activity .activity-line{stroke-dasharray:18;animation:pulseActivity 1.8s ease-in-out infinite}
+    .ico-ban     {animation:banShake 3s ease-in-out infinite}
+    .drop-a{animation:dropFall 1.4s ease-in infinite}
+    .drop-b{animation:dropFall 1.4s ease-in .7s infinite}
+
+    /* ══ LOGIN ════════════════════════════════════════════════ */
+    #login-screen{
+      min-height:100vh;display:flex;align-items:center;justify-content:center;
+      position:relative;overflow:hidden;background:var(--bg0);
+    }
+    #login-screen::before{
+      content:'';position:absolute;inset:-30%;
+      background:radial-gradient(ellipse 55% 45% at 50% 50%,rgba(0,200,150,.08) 0%,transparent 65%);
+      animation:bgPulse 12s ease-in-out infinite;pointer-events:none;
+    }
+    #login-screen::after{
+      content:'';position:absolute;bottom:-15%;right:-10%;width:400px;height:400px;
+      background:radial-gradient(circle,rgba(59,130,246,.05) 0%,transparent 70%);
+      animation:bgPulse 16s ease-in-out infinite reverse;pointer-events:none;
+    }
+    @keyframes bgPulse{0%,100%{transform:scale(1);opacity:.5}50%{transform:scale(1.12);opacity:1}}
+
+    .login-card{
+      background:var(--bg2);border:1px solid var(--bdc);border-radius:20px;
+      padding:44px 40px;width:100%;max-width:420px;
+      box-shadow:var(--s3),var(--gl-a);position:relative;z-index:2;
+    }
+    .login-theme-btn{
+      position:absolute;top:18px;right:18px;
+      background:var(--inp);border:1px solid var(--bdc);border-radius:8px;
+      padding:5px 11px;font-size:.72rem;font-weight:600;color:var(--t3);
+      display:flex;align-items:center;gap:5px;transition:all .2s;
+    }
+    .login-theme-btn:hover{color:var(--acc);border-color:var(--acc)}
+
+    .login-logo{text-align:center;margin-bottom:32px}
+    .brand-chip{
+      display:inline-flex;align-items:center;gap:7px;
+      background:linear-gradient(135deg,rgba(0,200,150,.14),rgba(0,200,150,.04));
+      border:1px solid rgba(0,200,150,.28);border-radius:100px;
+      padding:5px 16px;margin-bottom:16px;
+    }
+    .brand-chip span{font-size:.68rem;font-weight:700;color:var(--acc);letter-spacing:1.4px;text-transform:uppercase}
+    .login-logo h1{font-size:1.55rem;font-weight:800;color:var(--acc);letter-spacing:-.4px;line-height:1.2}
+    .login-logo p{font-size:.78rem;color:var(--t3);margin-top:5px;line-height:1.5}
+    .login-divider{width:40px;height:3px;background:linear-gradient(90deg,var(--acc),transparent);border-radius:2px;margin:18px auto 0}
+
+    .form-group{margin-bottom:18px}
+    .form-group label{display:block;font-size:.68rem;font-weight:700;color:var(--t3);letter-spacing:.7px;text-transform:uppercase;margin-bottom:7px}
+    .form-group input{
+      width:100%;padding:13px 15px;background:var(--inp);border:1.5px solid var(--bdr);
+      border-radius:11px;color:var(--t1);font-size:.9rem;font-family:'Inter',sans-serif;
+      outline:none;transition:border-color .2s,box-shadow .2s;
+    }
+    .form-group input:focus{border-color:var(--acc);box-shadow:0 0 0 3px rgba(0,200,150,.12)}
+    .form-group input::placeholder{color:var(--t3)}
+
+    .btn-login{
+      width:100%;padding:14px;
+      background:linear-gradient(135deg,var(--acc),var(--acc2));
+      color:#07090f;border:none;border-radius:11px;font-size:.9rem;font-weight:700;
+      letter-spacing:.4px;transition:transform .2s,box-shadow .2s,opacity .2s;margin-top:4px;
+    }
+    .btn-login:hover:not(:disabled){transform:translateY(-2px);box-shadow:0 8px 28px rgba(0,200,150,.38)}
+    .btn-login:disabled{opacity:.6;cursor:not-allowed}
+
+    .login-status{margin-top:12px;font-size:.8rem;border-radius:10px;padding:10px 14px;text-align:center;display:none}
+    .login-status.loading{display:flex;align-items:center;justify-content:center;gap:8px;color:var(--t3)}
+    .login-status.error{display:block;background:rgba(239,68,68,.10);border:1px solid rgba(239,68,68,.28);color:var(--red)}
+    .login-footer-note{text-align:center;margin-top:20px;font-size:.68rem;color:var(--t3);line-height:1.6}
+
+    .spinner{width:16px;height:16px;border:2px solid var(--bdc);border-top-color:var(--acc);border-radius:50%;animation:spin .7s linear infinite;flex-shrink:0}
+    @keyframes spin{to{transform:rotate(360deg)}}
+
+    /* ══ DASHBOARD ════════════════════════════════════════════ */
+    #dashboard{display:none;min-height:100vh;flex-direction:column}
+
+    /* TOPBAR */
+    .topbar{
+      height:56px;background:var(--bg1);border-bottom:1px solid var(--bdr);
+      display:flex;align-items:center;justify-content:space-between;
+      padding:0 22px;position:sticky;top:0;z-index:200;box-shadow:var(--s1);transition:var(--tr);
+    }
+    .topbar-left{display:flex;align-items:center;gap:12px}
+    .topbar-icon{
+      width:32px;height:32px;
+      background:linear-gradient(135deg,var(--acc),var(--acc2));
+      border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0;
+    }
+    .topbar-brands{display:flex;flex-direction:column;gap:1px}
+    .topbar-title{font-size:.88rem;font-weight:800;color:var(--t1);letter-spacing:-.2px;line-height:1}
+    .topbar-sub{font-size:.64rem;color:var(--t3);line-height:1}
+    .topbar-divider{width:1px;height:28px;background:var(--bdr);margin:0 4px;flex-shrink:0}
+    .topbar-user-pill{
+      display:flex;align-items:center;gap:7px;
+      background:linear-gradient(135deg,rgba(0,200,150,.10),rgba(0,200,150,.04));
+      border:1px solid rgba(0,200,150,.22);border-radius:100px;
+      padding:4px 12px 4px 5px;
+    }
+    .topbar-avatar{width:22px;height:22px;background:linear-gradient(135deg,var(--acc),var(--acc2));border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:.68rem;color:#07090f;flex-shrink:0}
+    .topbar-user-name{font-size:.72rem;font-weight:700;color:var(--t1)}
+    .topbar-update{font-size:.62rem;color:var(--t3);display:flex;align-items:center;gap:4px;white-space:nowrap}
+    .topbar-right{display:flex;align-items:center;gap:8px}
+    .status-pill{display:flex;align-items:center;gap:5px;background:rgba(34,197,94,.12);border:1px solid rgba(34,197,94,.25);border-radius:100px;padding:4px 11px;font-size:.68rem;font-weight:700;color:#22c55e}
+    .status-dot{width:6px;height:6px;border-radius:50%;background:#22c55e;animation:blink 2.5s ease-in-out infinite}
+    @keyframes blink{0%,100%{opacity:1}50%{opacity:.2}}
+    .btn-action{background:var(--bg2);border:1px solid var(--bdc);border-radius:8px;padding:6px 14px;color:var(--t2);font-size:.74rem;font-weight:600;transition:all .2s;display:flex;align-items:center;gap:5px}
+    .btn-action:hover{border-color:var(--acc);color:var(--acc)}
+    .btn-logout{background:transparent;border:1px solid var(--bdr);border-radius:8px;padding:6px 12px;color:var(--t3);font-size:.74rem;transition:all .2s}
+    .btn-logout:hover{border-color:rgba(239,68,68,.4);color:var(--red)}
+
+    /* MAIN */
+    .main{padding:22px 24px 40px;max-width:1800px;margin:0 auto;width:100%}
+
+    /* user-bar hidden — info moved to topbar */
+    .user-bar{display:none!important}
+
+    /* SECTION LABEL */
+    .sec-label{display:flex;align-items:center;gap:8px;font-size:.66rem;font-weight:800;color:var(--t3);letter-spacing:1.1px;text-transform:uppercase;margin-bottom:14px}
+    .sec-label::after{content:'';flex:1;height:1px;background:var(--bdr)}
+
+    /* ══ SPLIT ════════════════════════════════════════════════ */
+    .split-grid{display:grid;grid-template-columns:1fr 1fr;gap:0;position:relative}
+    .split-divider{position:absolute;top:0;left:50%;bottom:0;width:1px;margin-left:-.5px;background:linear-gradient(180deg,transparent,var(--bdr) 8%,var(--bdr) 92%,transparent);pointer-events:none;z-index:1}
+    .contract-panel{padding:0}
+    .contract-panel:first-child{padding-right:22px}
+    .contract-panel:last-child{padding-left:22px}
+
+    /* Contract header */
+    .contract-hdr{
+      display:flex;align-items:center;gap:12px;padding:14px 18px;
+      border-radius:12px;margin-bottom:16px;border:1px solid var(--bdc);position:relative;overflow:hidden;
+    }
+    .contract-hdr.gaxeta{background:linear-gradient(135deg,rgba(0,200,150,.07),var(--bg2));box-shadow:var(--gl-a)}
+    .contract-hdr.selos {background:linear-gradient(135deg,rgba(59,130,246,.07),var(--bg2));box-shadow:var(--gl-b)}
+    .contract-hdr-icon{width:40px;height:40px;border-radius:11px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+    .contract-hdr.gaxeta .contract-hdr-icon{background:linear-gradient(135deg,var(--acc),var(--acc2))}
+    .contract-hdr.selos  .contract-hdr-icon{background:linear-gradient(135deg,var(--blue),var(--blue2))}
+    .contract-hdr-texts h2{font-size:.95rem;font-weight:800;color:var(--t1);letter-spacing:-.2px}
+    .contract-hdr-texts p{font-size:.68rem;color:var(--t3);margin-top:2px}
+    .contract-badge{position:absolute;top:12px;right:14px;font-size:.62rem;font-weight:700;letter-spacing:.9px;text-transform:uppercase;padding:2px 9px;border-radius:100px}
+    .contract-badge.gaxeta{background:rgba(0,200,150,.12);border:1px solid rgba(0,200,150,.28);color:var(--acc)}
+    .contract-badge.selos {background:rgba(59,130,246,.12);border:1px solid rgba(59,130,246,.28);color:#60a5fa}
+
+    /* ══ KPI GRID ═════════════════════════════════════════════ */
+    /* Gaxeta: row1 = 2 cols (equip+interv), row2 = 3 cols (ajustes) */
+    .kpi-top{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px;overflow:visible}
+    .kpi-bottom{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:16px;overflow:visible}
+    /* Selos: row1 = 3 cols (equip+interv+mtbf), row2 = 4 cols */
+    .kpi-top-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:10px;overflow:visible}
+    .kpi-bottom-4{display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:10px;margin-bottom:16px;overflow:visible}
+
+    .kpi-card{
+      background:var(--bg2);border:1px solid var(--bdc);border-radius:10px;
+      padding:13px 14px 11px;position:relative;overflow:hidden;
+      transition:transform .28s cubic-bezier(0.34,1.56,0.64,1),
+                 box-shadow .28s ease,
+                 background .3s,
+                 border-color .28s ease;
+      cursor:default;z-index:1;
+    }
+    .kpi-card:hover{
+      transform:scale(1.13) translateY(-5px);
+      z-index:30;
+      box-shadow:0 24px 64px rgba(0,0,0,.55), 0 0 0 1.5px var(--acc), 0 0 36px rgba(0,200,150,.22);
+      background:var(--bg3);
+      border-color:var(--acc);
+      overflow:visible;
+    }
+    .kpi-bar{position:absolute;top:0;left:0;right:0;height:2px;border-radius:10px 10px 0 0}
+    .kpi-bar.c-teal  {background:linear-gradient(90deg,var(--acc),#34d399)}
+    .kpi-bar.c-blue  {background:linear-gradient(90deg,var(--blue),#60a5fa)}
+    .kpi-bar.c-green {background:linear-gradient(90deg,var(--green),#4ade80)}
+    .kpi-bar.c-orange{background:linear-gradient(90deg,var(--orange),#fb923c)}
+    .kpi-bar.c-red   {background:linear-gradient(90deg,var(--red),#f87171)}
+    .kpi-bar.c-purple{background:linear-gradient(90deg,var(--purple),#c084fc)}
+    .kpi-bar.c-amber {background:linear-gradient(90deg,var(--amber),#fbbf24)}
+
+    .kpi-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:6px}
+    .kpi-ico{display:flex;align-items:center;justify-content:center;width:30px;height:30px;border-radius:8px;flex-shrink:0}
+    .kpi-trend{font-size:.62rem;font-weight:700;padding:2px 6px;border-radius:4px}
+    .kpi-lbl{font-size:.66rem;font-weight:600;color:var(--t3);line-height:1.3;letter-spacing:.1px}
+    .kpi-val{font-size:1.55rem;font-weight:900;color:var(--t1);line-height:1;margin-top:3px;letter-spacing:-.03em}
+    .kpi-val.c-teal  {color:var(--acc)}
+    .kpi-val.c-blue  {color:#60a5fa}
+    .kpi-val.c-green {color:var(--green)}
+    .kpi-val.c-orange{color:var(--orange)}
+    .kpi-val.c-red   {color:var(--red)}
+    .kpi-val.c-purple{color:var(--purple)}
+    .kpi-val.c-amber {color:var(--amber)}
+
+    /* ══ LEAK / STATUS ICONS (pure SVG inline) ════════════════ */
+    @keyframes dropFall{0%{transform:translateY(0) scale(1);opacity:.9}70%{transform:translateY(7px) scale(1,1.3);opacity:.6}100%{transform:translateY(12px) scale(1,.3);opacity:0}}
+    @keyframes dropPulse{0%,100%{transform:scale(1)}50%{transform:scale(1.07)}}
+    @keyframes shieldGlow{0%,100%{filter:drop-shadow(0 0 2px currentColor)}50%{filter:drop-shadow(0 0 5px currentColor)}}
+    @keyframes ringPulse{0%,100%{r:7;opacity:1}50%{r:10;opacity:.3}}
+
+    .ico-animated{animation:dropPulse 2.4s ease-in-out infinite}
+    .ico-glow{animation:shieldGlow 2.8s ease-in-out infinite}
+    .drop-a{animation:dropFall 1.5s ease-in infinite}
+    .drop-b{animation:dropFall 1.5s ease-in .75s infinite}
+
+    /* ══ TABLE ════════════════════════════════════════════════ */
+    .table-box{background:var(--bg2);border:1px solid var(--bdc);border-radius:12px;overflow:hidden;margin-bottom:20px;box-shadow:var(--s1)}
+    .table-head{display:flex;align-items:center;justify-content:space-between;padding:12px 18px;border-bottom:1px solid var(--bdr)}
+    .table-head-title{font-size:.82rem;font-weight:700;color:var(--t1)}
+    .table-head-right{display:flex;align-items:center;gap:8px}
+    .table-head-meta{font-size:.68rem;color:var(--t3)}
+    .btn-expand{background:var(--inp);border:1px solid var(--bdc);border-radius:7px;padding:4px 11px;font-size:.68rem;font-weight:600;color:var(--t2);display:flex;align-items:center;gap:5px;transition:all .2s}
+    .btn-expand:hover{color:var(--acc);border-color:var(--acc)}
+
+    .data-table{width:100%;border-collapse:collapse}
+    .data-table thead tr{background:var(--bg1)}
+    .data-table th{padding:9px 14px;text-align:left;font-size:.64rem;font-weight:700;color:var(--t3);letter-spacing:.7px;text-transform:uppercase;border-bottom:1px solid var(--bdr)}
+    .data-table td{padding:10px 14px;font-size:.8rem;color:var(--t2);border-bottom:1px solid var(--bdr);transition:background .15s}
+    .data-table tbody tr:last-child td{border-bottom:none}
+    .data-table tbody tr:hover td{background:rgba(255,255,255,.02)}
+    .row-hidden{display:none}
+    .row-hidden.visible{display:table-row}
+
+    .badge{display:inline-flex;align-items:center;gap:4px;padding:3px 9px;border-radius:100px;font-size:.72rem;font-weight:700}
+    .badge.teal  {background:rgba(0,200,150,.12);border:1px solid rgba(0,200,150,.28);color:var(--acc)}
+    .badge.orange{background:rgba(249,115,22,.12);border:1px solid rgba(249,115,22,.28);color:var(--orange)}
+    .badge.red   {background:rgba(239,68,68,.12); border:1px solid rgba(239,68,68,.28); color:var(--red)}
+    .badge.purple{background:rgba(168,85,247,.12);border:1px solid rgba(168,85,247,.28);color:var(--purple)}
+    .badge.green {background:rgba(34,197,94,.12); border:1px solid rgba(34,197,94,.28); color:var(--green)}
+    .badge.blue  {background:rgba(59,130,246,.12);border:1px solid rgba(59,130,246,.28);color:#60a5fa}
+    .badge.neutral{background:var(--inp);border:1px solid var(--bdc);color:var(--t2)}
+
+    /* ══ PBI TABS ═════════════════════════════════════════════ */
+    .pbi-section{margin-bottom:24px}
+    .pbi-tabs{display:flex;border:1px solid var(--bdc);border-radius:12px 12px 0 0;overflow:hidden;background:var(--bg1)}
+    .pbi-tab{flex:1;padding:12px 16px;display:flex;align-items:center;gap:8px;background:transparent;border:none;cursor:pointer;font-size:.78rem;font-weight:700;color:var(--t3);transition:all .2s;border-bottom:2px solid transparent}
+    .pbi-tab:first-child{border-right:1px solid var(--bdr)}
+    .pbi-tab.active.gt{color:var(--acc);border-bottom-color:var(--acc);background:rgba(0,200,150,.05)}
+    .pbi-tab.active.st{color:#60a5fa;border-bottom-color:var(--blue);background:rgba(59,130,246,.05)}
+    .pbi-tab:hover:not(.active){background:var(--bg3);color:var(--t1)}
+    .pbi-tab-ico{width:24px;height:24px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:.8rem;flex-shrink:0}
+    .pbi-tab.active.gt .pbi-tab-ico{background:linear-gradient(135deg,var(--acc),var(--acc2))}
+    .pbi-tab.active.st .pbi-tab-ico{background:linear-gradient(135deg,var(--blue),var(--blue2))}
+
+    .pbi-panel{display:none;background:var(--bg2);border:1px solid var(--bdc);border-top:none;border-radius:0 0 12px 12px;overflow:hidden;box-shadow:var(--s1)}
+    .pbi-panel.active{display:block}
+    .pbi-panel-hdr{display:flex;align-items:center;gap:10px;padding:12px 18px;border-bottom:1px solid var(--bdr)}
+    .pbi-panel-title{font-size:.82rem;font-weight:700;color:var(--t1)}
+    .pbi-panel-sub{font-size:.66rem;color:var(--t3);margin-top:1px}
+    .pbi-iframe-wrap{position:relative;width:100%;padding-top:56%}
+    .pbi-iframe-wrap iframe{position:absolute;top:0;left:0;width:100%;height:100%;border:none}
+
+    /* ══ SGA ══════════════════════════════════════════════════ */
+    .sga-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:28px}
+    .sga-card{
+      background:var(--bg2);border:1px solid var(--bdc);border-radius:12px;
+      padding:20px 22px;display:flex;align-items:center;justify-content:space-between;gap:14px;
+      box-shadow:var(--s1);position:relative;overflow:hidden;
+    }
+    .sga-card.gaxeta::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--acc),var(--acc2))}
+    .sga-card.selos::before {content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--blue),var(--blue2))}
+    .sga-info h3{font-size:.85rem;font-weight:800;color:var(--t1);margin-bottom:3px}
+    .sga-info p{font-size:.72rem;color:var(--t3);line-height:1.5;max-width:280px}
+    .btn-sga{display:inline-flex;align-items:center;gap:10px;border:none;border-radius:10px;padding:12px 18px;font-size:.82rem;font-weight:800;letter-spacing:.3px;transition:transform .2s,box-shadow .2s;white-space:nowrap;flex-shrink:0;text-decoration:none}
+    .btn-sga.gaxeta{background:linear-gradient(135deg,var(--acc),var(--acc2));color:#07090f;box-shadow:0 4px 18px rgba(0,200,150,.28)}
+    .btn-sga.selos {background:linear-gradient(135deg,var(--blue),var(--blue2));color:#fff;box-shadow:0 4px 18px rgba(59,130,246,.28)}
+    .btn-sga:hover{transform:translateY(-2px)}
+    .btn-sga.gaxeta:hover{box-shadow:0 10px 32px rgba(0,200,150,.45)}
+    .btn-sga.selos:hover {box-shadow:0 10px 32px rgba(59,130,246,.45)}
+    .btn-sga-texts{display:flex;flex-direction:column;align-items:flex-start}
+    .btn-sga-texts span:first-child{font-size:.82rem;font-weight:800}
+    .btn-sga-texts span:last-child{font-size:.65rem;font-weight:500;opacity:.6}
+
+    /* placeholder */
+    .placeholder{display:flex;align-items:center;justify-content:center;gap:8px;padding:32px;font-size:.82rem;color:var(--t3)}
+    .placeholder.err{color:var(--red)}
+
+    /* FOOTER */
+    .footer{text-align:center;padding:18px 24px;font-size:.68rem;color:var(--t3);border-top:1px solid var(--bdr)}
+
+    /* ══ CHATBOT BUTTON (Glassmorphism) ══════════════════ */
+    .btn-chatbot {
+      display: flex; align-items: center; gap: 8px;
+      padding: 7px 16px 7px 10px;
+      background: rgba(0,200,150,.08);
+      backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
+      border: 1px solid rgba(0,200,150,.30);
+      border-radius: 100px;
+      color: var(--acc);
+      font-size: .74rem; font-weight: 700;
+      letter-spacing: .3px;
+      cursor: pointer;
+      transition: all .25s cubic-bezier(.34,1.56,.64,1);
+      position: relative; overflow: hidden;
+    }
+    .btn-chatbot::before {
+      content: '';
+      position: absolute; inset: 0;
+      background: linear-gradient(135deg,rgba(0,200,150,.15),rgba(0,200,150,.03));
+      opacity: 0; transition: opacity .2s;
+    }
+    .btn-chatbot:hover {
+      transform: translateY(-2px) scale(1.04);
+      border-color: rgba(0,200,150,.55);
+      box-shadow: 0 6px 28px rgba(0,200,150,.28), 0 0 0 1px rgba(0,200,150,.18);
+    }
+    .btn-chatbot:hover::before { opacity: 1; }
+    .btn-chatbot:active { transform: translateY(0) scale(.98); }
+    .btn-chatbot-icon {
+      width: 26px; height: 26px;
+      background: linear-gradient(135deg,var(--acc),var(--acc2));
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+      box-shadow: 0 2px 8px rgba(0,200,150,.35);
+    }
+    .btn-chatbot-pulse {
+      position: absolute; top: 6px; right: 14px;
+      width: 7px; height: 7px;
+      background: var(--acc); border-radius: 50%;
+      animation: chatPulse 2.4s ease-in-out infinite;
+    }
+    @keyframes chatPulse {
+      0%,100%{transform:scale(1);opacity:1;box-shadow:0 0 0 0 rgba(0,200,150,.6)}
+      50%{transform:scale(1.2);opacity:.8;box-shadow:0 0 0 5px rgba(0,200,150,0)}
+    }
+
+    /* ══ CHATBOT OVERLAY ══════════════════════════════════ */
+    #chatbot-overlay {
+      display: none; position: fixed; inset: 0; z-index: 9000;
+      background: rgba(7,9,15,.65);
+      backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+      align-items: center; justify-content: center;
+      padding: 16px; animation: overlayIn .22s ease;
+    }
+    #chatbot-overlay.open { display: flex; }
+    @keyframes overlayIn { from{opacity:0} to{opacity:1} }
+
+    /* ══ CHATBOT MODAL ════════════════════════════════════ */
+    .chat-modal {
+      width: 100%; max-width: 780px; height: min(88vh, 760px);
+      background: var(--bg1);
+      border: 1px solid var(--bdc);
+      border-radius: 20px;
+      display: flex; flex-direction: column;
+      box-shadow: 0 32px 100px rgba(0,0,0,.75), 0 0 0 1px rgba(0,200,150,.08);
+      animation: modalIn .28s cubic-bezier(.34,1.56,.64,1);
+      overflow: hidden; position: relative;
+    }
+    @keyframes modalIn {
+      from{transform:scale(.90) translateY(24px);opacity:0}
+      to{transform:scale(1) translateY(0);opacity:1}
+    }
+
+    /* Modal header */
+    .chat-hdr {
+      display: flex; align-items: center; gap: 12px;
+      padding: 16px 20px; border-bottom: 1px solid var(--bdr);
+      background: var(--bg2); flex-shrink: 0;
+    }
+    .chat-hdr-icon {
+      width: 38px; height: 38px;
+      background: linear-gradient(135deg,var(--acc),var(--acc2));
+      border-radius: 12px;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0; box-shadow: 0 4px 14px rgba(0,200,150,.35);
+    }
+    .chat-hdr-texts { flex: 1 }
+    .chat-hdr-title { font-size: .9rem; font-weight: 800; color: var(--t1); line-height: 1 }
+    .chat-hdr-sub { font-size: .65rem; color: var(--t3); margin-top: 3px }
+    .chat-contract-badge {
+      font-size: .65rem; font-weight: 700; letter-spacing: .8px;
+      text-transform: uppercase; padding: 3px 10px; border-radius: 100px;
+      display: none;
+    }
+    .chat-contract-badge.gaxeta { display:inline-flex; background:rgba(0,200,150,.12); border:1px solid rgba(0,200,150,.28); color:var(--acc) }
+    .chat-contract-badge.selos  { display:inline-flex; background:rgba(59,130,246,.12); border:1px solid rgba(59,130,246,.28); color:#60a5fa }
+    .chat-hdr-actions { display:flex; align-items:center; gap:6px }
+    .btn-chat-reset {
+      display: none; align-items: center; gap: 5px;
+      background: var(--inp); border: 1px solid var(--bdc); border-radius: 8px;
+      padding: 5px 11px; font-size: .67rem; font-weight: 600; color: var(--t3);
+      cursor: pointer; transition: all .2s;
+    }
+    .btn-chat-reset:hover { border-color: var(--acc); color: var(--acc) }
+    .btn-chat-reset.visible { display: flex }
+    .btn-chat-close {
+      width: 30px; height: 30px; border-radius: 8px;
+      background: transparent; border: 1px solid var(--bdr);
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer; color: var(--t3); transition: all .2s;
+    }
+    .btn-chat-close:hover { background:rgba(239,68,68,.10); border-color:rgba(239,68,68,.35); color:var(--red) }
+
+    /* Chat body */
+    .chat-body {
+      flex: 1; overflow-y: auto; padding: 20px;
+      display: flex; flex-direction: column; gap: 0;
+      scroll-behavior: smooth;
+    }
+    .chat-body::-webkit-scrollbar { width: 5px }
+    .chat-body::-webkit-scrollbar-thumb { background: var(--bdr); border-radius: 10px }
+
+    /* Contract selection screen */
+    .chat-select-screen {
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      flex: 1; gap: 24px; padding: 16px 0;
+      text-align: center;
+    }
+    .chat-select-avatar {
+      width: 68px; height: 68px;
+      background: linear-gradient(135deg,var(--acc),var(--acc2));
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      box-shadow: 0 0 40px rgba(0,200,150,.30);
+      animation: avatarFloat 3s ease-in-out infinite;
+    }
+    @keyframes avatarFloat {
+      0%,100%{transform:translateY(0)} 50%{transform:translateY(-6px)}
+    }
+    .chat-select-welcome {
+      font-size: 1.05rem; font-weight: 800; color: var(--t1); line-height: 1.3
+    }
+    .chat-select-sub { font-size: .8rem; color: var(--t3); max-width: 420px; line-height: 1.6 }
+    .chat-select-label {
+      font-size: .68rem; font-weight: 700; color: var(--t3);
+      letter-spacing: 1px; text-transform: uppercase;
+    }
+    .chat-contract-btns { display: flex; gap: 14px; flex-wrap: wrap; justify-content: center }
+    .btn-contract-select {
+      display: flex; flex-direction: column; align-items: center; gap: 10px;
+      padding: 22px 28px; border-radius: 16px; cursor: pointer;
+      border: 1.5px solid var(--bdc); background: var(--bg2);
+      transition: all .28s cubic-bezier(.34,1.56,.64,1);
+      min-width: 180px;
+    }
+    .btn-contract-select.gaxeta:hover {
+      border-color: var(--acc); background: rgba(0,200,150,.07);
+      transform: translateY(-4px) scale(1.04);
+      box-shadow: 0 16px 48px rgba(0,200,150,.22);
+    }
+    .btn-contract-select.selos:hover {
+      border-color: var(--blue); background: rgba(59,130,246,.07);
+      transform: translateY(-4px) scale(1.04);
+      box-shadow: 0 16px 48px rgba(59,130,246,.22);
+    }
+    .btn-contract-select-icon {
+      width: 52px; height: 52px; border-radius: 14px;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .btn-contract-select.gaxeta .btn-contract-select-icon { background: linear-gradient(135deg,var(--acc),var(--acc2)) }
+    .btn-contract-select.selos  .btn-contract-select-icon { background: linear-gradient(135deg,var(--blue),var(--blue2)) }
+    .btn-contract-select-name { font-size: .88rem; font-weight: 800; color: var(--t1) }
+    .btn-contract-select-desc { font-size: .68rem; color: var(--t3) }
+
+    /* Chat messages */
+    .chat-messages { display: flex; flex-direction: column; gap: 16px; flex: 1 }
+    .msg-row { display: flex; gap: 10px; align-items: flex-start }
+    .msg-row.user { flex-direction: row-reverse }
+    .msg-avatar {
+      width: 30px; height: 30px; border-radius: 50%; flex-shrink: 0;
+      display: flex; align-items: center; justify-content: center; font-size: .75rem; font-weight: 700;
+    }
+    .msg-row.bot  .msg-avatar { background: linear-gradient(135deg,var(--acc),var(--acc2)); color: #07090f }
+    .msg-row.user .msg-avatar { background: var(--bg3); border: 1px solid var(--bdc); color: var(--t2) }
+    .msg-bubble {
+      max-width: 75%; padding: 12px 16px; border-radius: 16px;
+      font-size: .83rem; line-height: 1.6; color: var(--t1);
+    }
+    .msg-row.bot  .msg-bubble {
+      background: var(--bg2); border: 1px solid var(--bdc); border-radius: 4px 16px 16px 16px;
+    }
+    .msg-row.user .msg-bubble {
+      background: linear-gradient(135deg,var(--acc),var(--acc2));
+      color: #07090f; border-radius: 16px 4px 16px 16px;
+    }
+    .msg-time { font-size: .62rem; color: var(--t3); margin-top: 4px; padding: 0 4px }
+
+    /* Typing indicator */
+    .typing-dots { display: flex; gap: 4px; align-items: center; padding: 4px 2px }
+    .typing-dots span {
+      width: 7px; height: 7px; border-radius: 50%; background: var(--acc);
+      animation: dotBounce .9s ease-in-out infinite;
+    }
+    .typing-dots span:nth-child(2) { animation-delay: .18s }
+    .typing-dots span:nth-child(3) { animation-delay: .36s }
+    @keyframes dotBounce {
+      0%,100%{transform:translateY(0);opacity:.4}
+      50%{transform:translateY(-5px);opacity:1}
+    }
+
+    /* Suggestions */
+    .chat-suggestions {
+      display: flex; flex-wrap: wrap; gap: 8px; padding: 12px 0 4px;
+    }
+    .chat-sugg-chip {
+      background: var(--inp); border: 1px solid var(--bdc); border-radius: 100px;
+      padding: 6px 14px; font-size: .73rem; color: var(--t2); cursor: pointer;
+      transition: all .2s; white-space: nowrap;
+    }
+    .chat-sugg-chip:hover { border-color: var(--acc); color: var(--acc); background: rgba(0,200,150,.06) }
+
+    /* Chat footer / input */
+    .chat-footer {
+      padding: 16px 20px; border-top: 1px solid var(--bdr);
+      background: var(--bg2); flex-shrink: 0; display: none;
+    }
+    .chat-footer.visible { display: block }
+    .chat-input-row { display: flex; gap: 10px; align-items: flex-end }
+    .chat-input {
+      flex: 1; padding: 12px 16px;
+      background: var(--inp); border: 1.5px solid var(--bdr);
+      border-radius: 14px; color: var(--t1); font-size: .85rem; font-family: 'Inter',sans-serif;
+      outline: none; resize: none; max-height: 140px;
+      transition: border-color .2s, box-shadow .2s;
+      line-height: 1.5;
+    }
+    .chat-input:focus { border-color: var(--acc); box-shadow: 0 0 0 3px rgba(0,200,150,.10) }
+    .chat-input::placeholder { color: var(--t3) }
+    .btn-chat-send {
+      width: 44px; height: 44px; border-radius: 12px;
+      background: linear-gradient(135deg,var(--acc),var(--acc2));
+      border: none; display: flex; align-items: center; justify-content: center;
+      cursor: pointer; flex-shrink: 0; transition: all .2s;
+      box-shadow: 0 4px 14px rgba(0,200,150,.35);
+    }
+    .btn-chat-send:hover { transform: scale(1.08); box-shadow: 0 6px 20px rgba(0,200,150,.5) }
+    .btn-chat-send:disabled { opacity: .45; cursor: not-allowed; transform: none }
+    .chat-footer-note {
+      font-size: .65rem; color: var(--t3); text-align: center; margin-top: 8px;
+      display: flex; align-items: center; justify-content: center; gap: 5px;
+    }
+    .chat-timeout-bar {
+      height: 2px; background: var(--bdr); border-radius: 2px;
+      margin-bottom: 12px; overflow: hidden; display: none;
+    }
+    .chat-timeout-bar.active { display: block }
+    .chat-timeout-fill {
+      height: 100%; background: linear-gradient(90deg,var(--acc),var(--acc2));
+      border-radius: 2px; width: 100%;
+      transition: width 1s linear;
+    }
+    .chat-timeout-fill.warning { background: linear-gradient(90deg,var(--orange),var(--red)) }
+
+    /* RESPONSIVE */
+    @media(max-width:1100px){
+      .split-grid{grid-template-columns:1fr}
+      .split-divider{display:none}
+      .contract-panel:first-child{padding:0 0 28px;border-bottom:1px solid var(--bdr);margin-bottom:28px}
+      .contract-panel:last-child{padding:0}
+      .sga-grid{grid-template-columns:1fr}
+      .kpi-bottom-4{grid-template-columns:1fr 1fr}
+    }
+    @media(max-width:768px){
+      .topbar{padding:0 14px}
+      .main{padding:14px 14px 28px}
+      .kpi-top-3,.kpi-bottom,.kpi-bottom-4{grid-template-columns:1fr 1fr}
+      .pbi-iframe-wrap{padding-top:72%}
+      .user-bar{flex-direction:column;align-items:flex-start;gap:6px}
+      .sga-card{flex-direction:column;text-align:center}
+      .btn-sga{width:100%;justify-content:center}
+    }
+    @media(max-width:500px){
+      .login-card{padding:32px 22px;margin:10px}
+      .topbar-sub{display:none}
+      .kpi-top,.kpi-top-3,.kpi-bottom,.kpi-bottom-4{grid-template-columns:1fr 1fr}
+    }
+  </style>
+</head>
+<body>
+
+<!-- ══════════════════════════════════════
+     LOGIN — APENAS SENHA
+══════════════════════════════════════ -->
+<div id="login-screen">
+  <div class="login-card">
+    <button class="login-theme-btn" onclick="toggleTheme()" id="login-theme-btn">☀️ Claro</button>
+
+    <div class="login-logo">
+      <div class="brand-chip">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+        <span>Chesterton do Brasil</span>
+      </div>
+      <h1>Portal Chesterton</h1>
+      <p>Klabin Monte Alegre · Gestão de Contratos Industriais</p>
+      <div class="login-divider"></div>
+    </div>
+
+    <div class="form-group">
+      <label>E-mail de acesso</label>
+      <input type="email" id="inp-email" placeholder="seu@email.com" autocomplete="email">
+    </div>
+    <div class="form-group">
+      <label>Senha</label>
+      <input type="password" id="inp-pass" placeholder="••••••••" autocomplete="current-password">
+    </div>
+    <button class="btn-login" id="btn-login" onclick="handleLogin()">Entrar no Portal</button>
+    <div class="login-status loading" id="status-loading"><div class="spinner"></div><span>Verificando...</span></div>
+    <div class="login-status error" id="status-error"></div>
+    <div class="login-footer-note">🔒 Acesso restrito · Chesterton Confidencial</div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     DASHBOARD
+══════════════════════════════════════ -->
+<div id="dashboard">
+
+  <header class="topbar">
+    <div class="topbar-left">
+      <div class="topbar-icon">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#07090f" stroke-width="2.5"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+      </div>
+      <div class="topbar-brands">
+        <div class="topbar-title">Klabin Monte Alegre &nbsp;·&nbsp; Chesterton do Brasil</div>
+        <div class="topbar-sub">Portal de Contratos · Gaxeta &amp; Selos Mecânicos</div>
+      </div>
+      <div class="topbar-divider"></div>
+      <div class="topbar-user-pill">
+        <div class="topbar-avatar" id="avatar-initial">K</div>
+        <span class="topbar-user-name" id="display-user">—</span>
+      </div>
+      <div class="topbar-update" id="topbar-update" style="display:none">
+        <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 11-2.12-9.36L23 10"/></svg>
+        <span id="last-update">—</span>
+      </div>
+    </div>
+    <div class="topbar-right">
+      <div class="status-pill"><div class="status-dot"></div><span>Online</span></div>
+
+      <!-- IA CHAT BUTTON — Glassmorphism -->
+      <button class="btn-chatbot" onclick="openChatbot()" id="btn-chatbot" style="display:none">
+        <div class="btn-chatbot-icon">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#07090f" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/>
+            <circle cx="9" cy="10" r=".8" fill="#07090f"/><circle cx="12" cy="10" r=".8" fill="#07090f"/><circle cx="15" cy="10" r=".8" fill="#07090f"/>
+          </svg>
+        </div>
+        <span>IA Assistente</span>
+        <div class="btn-chatbot-pulse"></div>
+      </button>
+
+      <button class="btn-action" onclick="toggleTheme()" id="dash-theme-btn">☀️ Claro</button>
+      <button class="btn-logout" onclick="handleLogout()">Sair</button>
+    </div>
+  </header>
+
+  <main class="main">
+
+    <!-- ══ SPLIT PANELS ══════════════════════════════ -->
+    <div class="sec-label">
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="3" y="3" width="7" height="18" rx="1"/><rect x="14" y="3" width="7" height="18" rx="1"/></svg>
+      Contratos · Visão Consolidada
+    </div>
+
+    <div class="split-grid">
+      <div class="split-divider"></div>
+
+      <!-- ═══ PAINEL GAXETA ═══ -->
+      <div class="contract-panel">
+
+        <div class="contract-hdr gaxeta">
+          <div class="contract-hdr-icon">
+            <!-- Gaxeta valve icon -->
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#07090f" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M4.93 4.93l2.12 2.12M16.95 16.95l2.12 2.12M4.93 19.07l2.12-2.12M16.95 7.05l2.12-2.12"/>
+            </svg>
+          </div>
+          <div class="contract-hdr-texts">
+            <h2>Contrato de Gaxeta</h2>
+            <p>Gland Packing · Curso Preme-Gaxeta</p>
+          </div>
+          <span class="contract-badge gaxeta">Gaxeta</span>
+        </div>
+
+        <!-- KPI row 1: Equip + Interv -->
+        <div class="kpi-top" id="kpi-g-top">
+          <div class="placeholder" style="grid-column:1/-1"><div class="spinner"></div></div>
+        </div>
+        <!-- KPI row 2: Ajustes -->
+        <div class="kpi-bottom" id="kpi-g-bot">
+          <div class="placeholder" style="grid-column:1/-1"><div class="spinner"></div></div>
+        </div>
+
+        <!-- Table Gaxeta -->
+        <div class="sec-label" style="font-size:.62rem">
+          <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+          Listagem Detalhada — Gaxeta
+        </div>
+        <div class="table-box">
+          <div class="table-head">
+            <span class="table-head-title">Equipamentos · Sem Ajuste</span>
+            <div class="table-head-right">
+              <span class="table-head-meta" id="meta-g">—</span>
+              <button class="btn-expand" id="expand-g" onclick="toggleExpand('g')" style="display:none">
+                <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+                Ver todos
+              </button>
+            </div>
+          </div>
+          <div id="table-g">
+            <div class="placeholder"><div class="spinner"></div></div>
+          </div>
+        </div>
+
+      </div><!-- /GAXETA -->
+
+      <!-- ═══ PAINEL SELOS ═══ -->
+      <div class="contract-panel">
+
+        <div class="contract-hdr selos">
+          <div class="contract-hdr-icon">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="4"/>
+              <line x1="12" y1="2" x2="12" y2="8"/><line x1="12" y1="16" x2="12" y2="22"/>
+              <line x1="2"  y1="12" x2="8"  y2="12"/><line x1="16" y1="12" x2="22" y2="12"/>
+            </svg>
+          </div>
+          <div class="contract-hdr-texts">
+            <h2>Contrato de Selo Mecânico</h2>
+            <p>Mechanical Seal · Condição Operacional</p>
+          </div>
+          <span class="contract-badge selos">Selos</span>
+        </div>
+
+        <!-- KPI row 1: Equip + Interv + MTBF -->
+        <div class="kpi-top-3" id="kpi-s-top">
+          <div class="placeholder" style="grid-column:1/-1"><div class="spinner"></div></div>
+        </div>
+        <!-- KPI row 2: Normal + Vazamento + Fora + Periféricos -->
+        <div class="kpi-bottom-4" id="kpi-s-bot">
+          <div class="placeholder" style="grid-column:1/-1"><div class="spinner"></div></div>
+        </div>
+
+        <!-- Table Selos -->
+        <div class="sec-label" style="font-size:.62rem">
+          <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+          Listagem Detalhada — Selos Mecânicos
+        </div>
+        <div class="table-box">
+          <div class="table-head">
+            <span class="table-head-title">Ocorrências por Categoria</span>
+            <div class="table-head-right">
+              <span class="table-head-meta" id="meta-s">—</span>
+              <button class="btn-expand" id="expand-s" onclick="toggleExpand('s')" style="display:none">
+                <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+                Ver todos
+              </button>
+            </div>
+          </div>
+          <div id="table-s">
+            <div class="placeholder"><div class="spinner"></div></div>
+          </div>
+        </div>
+
+      </div><!-- /SELOS -->
+    </div><!-- /SPLIT -->
+
+    <!-- ══ POWER BI ══════════════════════════════════ -->
+    <div class="sec-label" style="margin-top:10px">
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>
+      Relatórios Analíticos · Power BI
+    </div>
+    <div class="pbi-section">
+      <div class="pbi-tabs">
+        <button class="pbi-tab gt active" id="tab-g" onclick="switchPBI('g')">
+          <div class="pbi-tab-ico">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3"/></svg>
+          </div>
+          Relatório Gaxeta
+        </button>
+        <button class="pbi-tab st" id="tab-s" onclick="switchPBI('s')">
+          <div class="pbi-tab-ico">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="4"/></svg>
+          </div>
+          Relatório Selos
+        </button>
+      </div>
+      <div class="pbi-panel active" id="pbi-g">
+        <div class="pbi-panel-hdr">
+          <div style="width:26px;height:26px;border-radius:7px;background:linear-gradient(135deg,#f2c811,#e8a000);display:flex;align-items:center;justify-content:center;font-size:.82rem;flex-shrink:0">📊</div>
+          <div><div class="pbi-panel-title">Gaxeta · Klabin Monte Alegre</div><div class="pbi-panel-sub">Análise de Gland Packing · Chesterton do Brasil</div></div>
+        </div>
+        <div class="pbi-iframe-wrap">
+          <iframe id="pbi-frame-g" src="about:blank" allowfullscreen sandbox="allow-scripts allow-same-origin allow-popups allow-forms allow-top-navigation" title="Power BI Gaxeta"></iframe>
+        </div>
+      </div>
+      <div class="pbi-panel" id="pbi-s">
+        <div class="pbi-panel-hdr">
+          <div style="width:26px;height:26px;border-radius:7px;background:linear-gradient(135deg,#f2c811,#e8a000);display:flex;align-items:center;justify-content:center;font-size:.82rem;flex-shrink:0">📊</div>
+          <div><div class="pbi-panel-title">Selos Mecânicos · Klabin Monte Alegre</div><div class="pbi-panel-sub">Análise de Condição Operacional · Chesterton do Brasil</div></div>
+        </div>
+        <div class="pbi-iframe-wrap">
+          <iframe id="pbi-frame-s" src="about:blank" allowfullscreen sandbox="allow-scripts allow-same-origin allow-popups allow-forms allow-top-navigation" title="Power BI Selos"></iframe>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ SGA ═══════════════════════════════════════ -->
+    <div class="sec-label">
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v2"/><line x1="12" y1="12" x2="12" y2="16"/><line x1="10" y1="14" x2="14" y2="14"/></svg>
+      Sistema de Gestão de Ativos · SGA
+    </div>
+    <div class="sga-grid">
+      <div class="sga-card gaxeta">
+        <div class="sga-info">
+          <h3>SGA · Contrato Gaxeta</h3>
+          <p>Registro e gestão de gaxetas em tempo real. Histórico de intervenções e status de ajuste dos equipamentos.</p>
+        </div>
+        <a class="btn-sga gaxeta" href="https://www.appsheet.com/start/d21d1e7f-1c4a-40ff-94eb-02dfbd8fb0bf" target="_blank" rel="noopener noreferrer">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M13 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V9z"/><polyline points="13 2 13 9 20 9"/></svg>
+          <div class="btn-sga-texts"><span>Abrir SGA Gaxeta</span><span>AppSheet · Gestão de Ativos</span></div>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="7" y1="17" x2="17" y2="7"/><polyline points="7 7 17 7 17 17"/></svg>
+        </a>
+      </div>
+      <div class="sga-card selos">
+        <div class="sga-info">
+          <h3>SGA · Contrato Selos</h3>
+          <p>Visualize e registre selos mecânicos. Condição operacional, histórico de vazamentos e intervenções.</p>
+        </div>
+        <a class="btn-sga selos" href="https://www.appsheet.com/start/cdab755a-001a-4c49-a50d-b72436131fd5" target="_blank" rel="noopener noreferrer">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M13 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V9z"/><polyline points="13 2 13 9 20 9"/></svg>
+          <div class="btn-sga-texts"><span>Abrir SGA Selos</span><span>AppSheet · Gestão de Ativos</span></div>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="7" y1="17" x2="17" y2="7"/><polyline points="7 7 17 7 17 17"/></svg>
+        </a>
+      </div>
+    </div>
+
+  </main>
+
+  <footer class="footer">
+    Chesterton do Brasil · Portal Klabin Monte Alegre · Uso interno restrito
+  </footer>
+</div>
+
+<!-- ══════════════════════════════════════
+     CHATBOT OVERLAY + MODAL
+══════════════════════════════════════ -->
+<div id="chatbot-overlay" role="dialog" aria-modal="true" aria-label="IA Assistente Chesterton">
+
+  <div class="chat-modal" id="chat-modal">
+
+    <!-- HEADER -->
+    <div class="chat-hdr">
+      <div class="chat-hdr-icon">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#07090f" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/>
+          <circle cx="9" cy="10" r=".8" fill="#07090f"/><circle cx="12" cy="10" r=".8" fill="#07090f"/><circle cx="15" cy="10" r=".8" fill="#07090f"/>
+        </svg>
+      </div>
+      <div class="chat-hdr-texts">
+        <div class="chat-hdr-title">IA Assistente · Klabin Monte Alegre</div>
+        <div class="chat-hdr-sub" id="chat-hdr-sub">Selecione um contrato para começar</div>
+      </div>
+      <div class="chat-hdr-actions">
+        <span class="chat-contract-badge" id="chat-contract-badge"></span>
+        <button class="btn-chat-reset" id="btn-chat-reset" onclick="chatReset()" title="Reiniciar conversa">
+          <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 11-2.12-9.36L23 10"/></svg>
+          Reiniciar
+        </button>
+        <button class="btn-chat-close" onclick="closeChatbot()" title="Fechar">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+      </div>
+    </div>
+
+    <!-- TIMEOUT BAR -->
+    <div class="chat-timeout-bar" id="chat-timeout-bar">
+      <div class="chat-timeout-fill" id="chat-timeout-fill"></div>
+    </div>
+
+    <!-- BODY -->
+    <div class="chat-body" id="chat-body">
+
+      <!-- TELA DE SELEÇÃO DE CONTRATO -->
+      <div class="chat-select-screen" id="chat-select-screen">
+        <div class="chat-select-avatar">
+          <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#07090f" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/>
+            <circle cx="9" cy="10" r=".9" fill="#07090f"/><circle cx="12" cy="10" r=".9" fill="#07090f"/><circle cx="15" cy="10" r=".9" fill="#07090f"/>
+          </svg>
+        </div>
+        <div>
+          <div class="chat-select-welcome">Olá! Sou o Assistente IA Chesterton 👋</div>
+          <div class="chat-select-sub" style="margin-top:8px">
+            Posso responder perguntas detalhadas sobre os contratos da Klabin Monte Alegre.<br>
+            Para começar, selecione sobre qual contrato deseja conversar:
+          </div>
+        </div>
+        <div class="chat-select-label">Escolha o contrato</div>
+        <div class="chat-contract-btns">
+          <button class="btn-contract-select gaxeta" onclick="selectContract('gaxeta')">
+            <div class="btn-contract-select-icon">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#07090f" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M4.93 4.93l2.12 2.12M16.95 16.95l2.12 2.12M4.93 19.07l2.12-2.12M16.95 7.05l2.12-2.12"/>
+              </svg>
+            </div>
+            <div class="btn-contract-select-name">Contrato de Gaxeta</div>
+            <div class="btn-contract-select-desc">Gland Packing · Preme-Gaxeta</div>
+          </button>
+          <button class="btn-contract-select selos" onclick="selectContract('selos')">
+            <div class="btn-contract-select-icon">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="4"/>
+                <line x1="12" y1="2" x2="12" y2="8"/><line x1="12" y1="16" x2="12" y2="22"/>
+                <line x1="2" y1="12" x2="8" y2="12"/><line x1="16" y1="12" x2="22" y2="12"/>
+              </svg>
+            </div>
+            <div class="btn-contract-select-name">Contrato de Selo Mecânico</div>
+            <div class="btn-contract-select-desc">Mechanical Seal · Condição Operacional</div>
+          </button>
+        </div>
+      </div>
+
+      <!-- ÁREA DE MENSAGENS (oculta até escolher contrato) -->
+      <div class="chat-messages" id="chat-messages" style="display:none"></div>
+
+    </div><!-- /chat-body -->
+
+    <!-- FOOTER INPUT (oculto até escolher contrato) -->
+    <div class="chat-footer" id="chat-footer">
+      <div class="chat-input-row">
+        <textarea class="chat-input" id="chat-input"
+          placeholder="Digite sua pergunta... Ex: Qual o MTBF do TAG X-102?"
+          rows="1"
+          onkeydown="chatInputKeydown(event)"
+          oninput="chatInputResize(this)"></textarea>
+        <button class="btn-chat-send" id="btn-chat-send" onclick="chatSend()" title="Enviar">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#07090f" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/>
+          </svg>
+        </button>
+      </div>
+      <div class="chat-footer-note">
+        <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>
+        Suas perguntas são processadas pelo N8N · A chave OpenAI fica segura no servidor
+      </div>
+      <!-- Chips de sugestão -->
+      <div class="chat-suggestions" id="chat-suggestions">
+        <span class="chat-sugg-chip" onclick="chatSuggestion(this)">🏷️ Consultar um Tag específico</span>
+        <span class="chat-sugg-chip" onclick="chatSuggestion(this)">📅 Falhas por mês/ano</span>
+        <span class="chat-sugg-chip" onclick="chatSuggestion(this)">📊 Resumo geral do contrato</span>
+        <span class="chat-sugg-chip" onclick="chatSuggestion(this)">⚠️ Equipamentos críticos</span>
+      </div>
+    </div><!-- /chat-footer -->
+
+  </div><!-- /chat-modal -->
+</div><!-- /chatbot-overlay -->
+
+<script>
+'use strict';
+
+/* ─── CONFIG ────────────────────────────────────────── */
+const CFG = {
+  LOGIN_URL   : 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQ1731PjXn-Isww5FCyVml2Yq8D0QGv7Z96VIYJfQ8RVkURa00ukOzLNWlvcGOWAnM8Ku7onrORE0sT/pub?gid=177019262&single=true&output=csv',
+  GAXETA_URL  : 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQOMcT6__n5M5EsqeGQWMO1GZ7qYoWyW0sFUn8tWLxX3wBnv0MWijFIdyZtWoKR0gp3RNHOuppBVzhV/pub?gid=262863106&single=true&output=csv',
+  SELOS_URL   : 'https://docs.google.com/spreadsheets/d/e/2PACX-1vT6NoaJgH6klcA26ep4XoT-siziu6AM3VbEaClRYL5H54r9lPPYkfopr9c-V3cViBw5DY9wV5lWt_hX/pub?gid=1363654509&single=true&output=csv',
+  PBI_GAXETA  : 'https://app.powerbi.com/view?r=eyJrIjoiMTAyZDgyNWMtMWE3NC00MGVmLWI5OGYtZjFiNTBhZDlkYzA1IiwidCI6ImYwMGQ1YzkwLTE2ZmQtNGUwNi1iY2Q2LWJmM2Y2MjEzNjVhMCJ9&pageName=a20643e19968caa5b1a6',
+  PBI_SELOS   : 'https://app.powerbi.com/view?r=eyJrIjoiMGQxY2RlYjYtOGIwYi00NjJkLThlNjgtNGM2YjZiODRlZjdkIiwidCI6ImYwMGQ1YzkwLTE2ZmQtNGUwNi1iY2Q2LWJmM2Y2MjEzNjVhMCJ9&pageName=967f19c6065e9727d0bb',
+  REFRESH_MS  : 5 * 60 * 1000,
+  TABLE_PREVIEW: 10,
+  /* senha unica de acesso — altere se necessário */
+  PORTAL_PASS : null   // null = verifica contra planilha de login
+};
+
+const S = { theme:'dark', timer:null, expanded:{g:false, s:false} };
+
+/* ─── THEME ─────────────────────────────────────────── */
+function applyTheme(t) {
+  S.theme = t;
+  document.documentElement.className = t;
+  const lbl = t==='dark' ? '☀️ Claro' : '🌙 Escuro';
+  ['login-theme-btn','dash-theme-btn'].forEach(id => { const el=document.getElementById(id); if(el) el.innerHTML=lbl; });
+  try { localStorage.setItem('klabin-theme', t); } catch(e) {}
+}
+function toggleTheme() { applyTheme(S.theme==='dark' ? 'light' : 'dark'); }
+(function() {
+  let t='dark';
+  try { t=localStorage.getItem('klabin-theme')||'dark'; } catch(e) {}
+  applyTheme(t);
+})();
+
+/* ─── PBI TABS ──────────────────────────────────────── */
+function switchPBI(w) {
+  ['g','s'].forEach(c => {
+    document.getElementById('pbi-'+c).classList.toggle('active', c===w);
+    document.getElementById('tab-'+c).classList.toggle('active', c===w);
+  });
+}
+
+/* ─── CSV ───────────────────────────────────────────── */
+function parseCSV(raw) {
+  const lines = raw.trim().split(/\r?\n/);
+  if (lines.length < 2) return [];
+  function splitLine(line) {
+    const out=[]; let cur='', inQ=false;
+    for (let i=0; i<line.length; i++) {
+      const c=line[i];
+      if (c==='"') { if(inQ&&line[i+1]==='"'){cur+='"';i++;}else inQ=!inQ; }
+      else if (c===','&&!inQ) { out.push(cur.trim()); cur=''; }
+      else cur+=c;
+    }
+    out.push(cur.trim());
+    return out;
+  }
+  const headers = splitLine(lines[0]);
+  return lines.slice(1).filter(l=>l.trim()).map(l => {
+    const vals = splitLine(l);
+    const obj = {};
+    headers.forEach((h,i) => { obj[h] = vals[i]!==undefined ? vals[i] : ''; });
+    return obj;
+  });
+}
+
+async function fetchCSV(url) {
+  const r = await fetch(url + '&_nc=' + Date.now(), { cache: 'no-store' });
+  if (!r.ok) throw new Error('HTTP '+r.status);
+  return parseCSV(await r.text());
+}
+
+/* ─── LOGIN (e-mail + senha) ────────────────────────── */
+async function handleLogin() {
+  const email = (document.getElementById('inp-email').value || '').trim();
+  const pass  = (document.getElementById('inp-pass').value  || '').trim();
+  const btnEl = document.getElementById('btn-login');
+  const loadEl= document.getElementById('status-loading');
+  const errEl = document.getElementById('status-error');
+  errEl.style.display='none';
+
+  if (!email || !pass) {
+    errEl.textContent='⚠️ Preencha e-mail e senha para continuar.';
+    errEl.style.display='block'; return;
+  }
+  btnEl.disabled=true; loadEl.classList.add('loading'); loadEl.style.display='';
+
+  try {
+    const users = await fetchCSV(CFG.LOGIN_URL);
+    const match = users.find(u => {
+      const login = (u['Login']||u['login']||u['E-mail']||u['Email']||u['EMAIL']||'').trim().toLowerCase();
+      const senha = (u['Senha']||u['senha']||u['SENHA']||u['Password']||'').trim();
+      return login === email.toLowerCase() && senha === pass;
+    });
+
+    if (match) {
+      /* Exibe o NOME real do usuário (coluna 'nome') — não o e-mail */
+      const nome = (match['nome']||match['Nome']||match['NOME']||'').trim() || email;
+      onLoginSuccess(nome);
+    } else {
+      errEl.textContent='⚠️ E-mail ou senha incorretos. Verifique suas credenciais.';
+      errEl.style.display='block';
+    }
+  } catch(err) {
+    console.error(err);
+    errEl.textContent='⚠️ Não foi possível verificar o acesso. Cheque sua conexão e tente novamente.';
+    errEl.style.display='block';
+  } finally {
+    btnEl.disabled=false; loadEl.style.display='none';
+  }
+}
+
+function onLoginSuccess(nome) {
+  /* Exibe nome real no topbar */
+  document.getElementById('avatar-initial').textContent = (nome||'K').charAt(0).toUpperCase();
+  document.getElementById('display-user').textContent   = nome || 'Operador';
+  document.getElementById('topbar-update').style.display='flex';
+  document.getElementById('login-screen').style.display='none';
+  const dash=document.getElementById('dashboard');
+  dash.style.display='flex'; dash.style.flexDirection='column';
+  setTimeout(() => {
+    document.getElementById('pbi-frame-g').src = CFG.PBI_GAXETA;
+    document.getElementById('pbi-frame-s').src = CFG.PBI_SELOS;
+  }, 500);
+  loadData();
+  S.timer = setInterval(loadData, CFG.REFRESH_MS);
+  /* Exibe botão IA Assistente na topbar */
+  const chatBtn = document.getElementById('btn-chatbot');
+  if (chatBtn) chatBtn.style.display = 'flex';
+}
+
+function handleLogout() {
+  if (S.timer) { clearInterval(S.timer); S.timer=null; }
+  /* Encerra sessão do chatbot se estiver ativa */
+  if (typeof CHAT !== 'undefined' && CHAT.sessionId) {
+    notifySessionEnd('user_logout');
+    CHAT.contract = null; CHAT.sessionId = null; CHAT.messages = [];
+    document.getElementById('chatbot-overlay')?.classList.remove('open');
+  }
+  /* Oculta botão IA */
+  const chatBtn = document.getElementById('btn-chatbot');
+  if (chatBtn) chatBtn.style.display = 'none';
+  document.getElementById('login-screen').style.display='flex';
+  document.getElementById('dashboard').style.display='none';
+  document.getElementById('inp-email').value='';
+  document.getElementById('inp-pass').value='';
+  document.getElementById('topbar-update').style.display='none';
+  document.getElementById('status-error').style.display='none';
+  document.getElementById('pbi-frame-g').src='about:blank';
+  document.getElementById('pbi-frame-s').src='about:blank';
+}
+
+/* ─── DATA ──────────────────────────────────────────── */
+async function loadData() {
+  try {
+    const [gRows, sRows] = await Promise.all([
+      fetchCSV(CFG.GAXETA_URL),
+      fetchCSV(CFG.SELOS_URL)
+    ]);
+    renderGaxeta(gRows);
+    renderSelos(sRows);
+    const timeNow = new Date().toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'});
+    document.getElementById('last-update').textContent = '↺ ' + timeNow;
+  } catch(e) {
+    console.error(e);
+    ['kpi-g-top','kpi-g-bot','kpi-s-top','kpi-s-bot'].forEach(id => {
+      const el=document.getElementById(id);
+      if(el) el.innerHTML='<div class="placeholder err" style="grid-column:1/-1">⚠️ Erro ao carregar dados.</div>';
+    });
+  }
+}
+
+/* ─── HELPERS ───────────────────────────────────────── */
+function nv(v) { return parseFloat(String(v||'0').replace(/[^\d.,]/g,'').replace(',','.'))||0; }
+function fmt(n) { return Math.round(n).toLocaleString('pt-BR'); }
+function fmtD(n) { return n.toLocaleString('pt-BR',{minimumFractionDigits:1,maximumFractionDigits:1}); }
+
+/* ─── SVG ICON BUILDERS ─────────────────────────────── */
+/* Drop / leak icon — animated drip */
+function svgDrop(col, animated=true) {
+  const drip = animated
+    ? `<ellipse class="drop-a" cx="12" cy="25" rx="2.2" ry="3" fill="${col}" opacity=".85"/>
+       <ellipse class="drop-b" cx="12" cy="25" rx="1.6" ry="2.4" fill="${col}" opacity=".6"/>`
+    : '';
+  return `<svg class="ico-animated" width="20" height="28" viewBox="0 0 24 30" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M12 2C12 2 3 13 3 18.5A9 9 0 0021 18.5C21 13 12 2 12 2Z" fill="${col}" opacity=".20" stroke="${col}" stroke-width="1.6" stroke-linejoin="round"/>
+    <path d="M12 2C12 2 3 13 3 18.5A9 9 0 0021 18.5C21 13 12 2 12 2Z" fill="${col}" opacity=".08"/>
+    <path d="M8 17Q9.5 21.5 12 21Q14.5 21.5 16 17" stroke="${col}" stroke-width="1.3" stroke-linecap="round" opacity=".55"/>
+    ${drip}
+  </svg>`;
+}
+
+/* Shield check — normal operation */
+function svgShield(col) {
+  return `<svg class="ico-glow" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="${col}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" fill="${col}" fill-opacity=".10"/>
+    <polyline points="9 12 11 14 15 10"/>
+  </svg>`;
+}
+
+/* Wrench icon — animated rock */
+function svgWrench(col) {
+  return `<svg class="ico-wrench" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="${col}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M14.7 6.3a1 1 0 000 1.4l1.6 1.6a1 1 0 001.4 0l3.77-3.77a6 6 0 01-7.94 7.94l-6.91 6.91a2.12 2.12 0 01-3-3l6.91-6.91a6 6 0 017.94-7.94l-3.76 3.76z"/>
+  </svg>`;
+}
+
+/* Activity pulse — animated line */
+function svgActivity(col) {
+  return `<svg class="ico-activity" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="${col}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <polyline class="activity-line" points="22 12 18 12 15 21 9 3 6 12 2 12"/>
+  </svg>`;
+}
+
+/* Clock for MTBF — animated hand */
+function svgClock(col) {
+  return `<svg class="ico-clock" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="${col}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="12" cy="12" r="10"/>
+    <polyline class="clock-hand" points="12 6 12 12 16 14"/>
+  </svg>`;
+}
+
+/* Stop / ban — animated shake */
+function svgBan(col) {
+  return `<svg class="ico-ban" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="${col}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="12" cy="12" r="10" fill="${col}" fill-opacity=".08"/>
+    <line x1="4.93" y1="4.93" x2="19.07" y2="19.07"/>
+  </svg>`;
+}
+
+/* KPI card builder */
+function kpiCard({bar, icoBg, ico, lbl, val, valClass}) {
+  return `<div class="kpi-card">
+    <div class="kpi-bar ${bar}"></div>
+    <div class="kpi-row">
+      <div class="kpi-ico" style="background:${icoBg}">${ico}</div>
+    </div>
+    <div class="kpi-lbl">${lbl}</div>
+    <div class="kpi-val ${valClass}">${val}</div>
+  </div>`;
+}
+
+/* ─── RENDER GAXETA ─────────────────────────────────── */
+function renderGaxeta(rows) {
+  const r = rows[0] || {};
+
+  /* KPI row 1 */
+  document.getElementById('kpi-g-top').innerHTML = [
+    kpiCard({bar:'c-teal',  icoBg:'rgba(0,200,150,.12)', ico:svgWrench('var(--acc)'),            lbl:'Equipamentos',     val:fmt(nv(r['Quantidade de Equipamentos'])),  valClass:'c-teal'}),
+    kpiCard({bar:'c-purple',icoBg:'rgba(168,85,247,.12)',ico:svgActivity('var(--purple)'),        lbl:'Intervenções',     val:fmt(nv(r['Quantidade de Intervenções'])),   valClass:'c-purple'}),
+  ].join('');
+
+  /* KPI row 2 */
+  document.getElementById('kpi-g-bot').innerHTML = [
+    kpiCard({bar:'c-amber', icoBg:'rgba(245,158,11,.12)',ico:svgDrop('#f59e0b',true),  lbl:'Preme Gaxeta<br><span style="font-weight:800;color:var(--amber)">Alto Ajuste</span>',   val:fmt(nv(r['Curso Preme-Gaxeta (Alto Ajuste)'])),  valClass:'c-amber'}),
+    kpiCard({bar:'c-blue',  icoBg:'rgba(59,130,246,.12)',ico:svgDrop('#60a5fa',false), lbl:'Preme Gaxeta<br><span style="font-weight:800;color:#60a5fa">Médio Ajuste</span>',  val:fmt(nv(r['Curso Preme-Gaxeta (Médio Ajuste)'])), valClass:'c-blue'}),
+    kpiCard({bar:'c-teal',  icoBg:'rgba(0,200,150,.12)', ico:svgDrop('var(--acc)',false),lbl:'Preme Gaxeta<br><span style="font-weight:800;color:var(--acc)">Sem Ajuste</span>', val:fmt(nv(r['Curso Preme-Gaxeta (Sem Ajuste)'])),   valClass:'c-teal'}),
+  ].join('');
+
+  /* Table */
+  const detail = rows.slice(2).filter(row => {
+    const vals = Object.values(row).filter(v => v && v.trim());
+    return vals.length > 0;
+  });
+  const SKIP = new Set(['Curso Preme-Gaxeta (Sem Ajuste)','','undefined']);
+  const semAjuste = detail
+    .map(row => (row['Curso Preme-Gaxeta (Sem Ajuste)']||'').trim())
+    .filter(v => v && !SKIP.has(v));
+
+  renderTableG(semAjuste);
+}
+
+function renderTableG(items) {
+  const PREVIEW = CFG.TABLE_PREVIEW;
+  document.getElementById('meta-g').textContent = `${items.length} equip.`;
+
+  const expandBtn = document.getElementById('expand-g');
+  if (items.length > PREVIEW) {
+    expandBtn.style.display='flex';
+    expandBtn.innerHTML = S.expanded.g
+      ? `<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="18 15 12 9 6 15"/></svg> Recolher`
+      : `<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg> Ver todos (${items.length})`;
+  } else {
+    expandBtn.style.display='none';
+  }
+
+  if (!items.length) {
+    document.getElementById('table-g').innerHTML='<div class="placeholder">Sem ocorrências de Sem Ajuste.</div>';
+    return;
+  }
+
+  const rows = items.map((eq, i) => {
+    const hidden = i >= PREVIEW && !S.expanded.g ? ' class="row-hidden"' : (i >= PREVIEW ? ' class="row-hidden visible"' : '');
+    return `<tr${hidden}>
+      <td style="color:var(--t3);font-size:.72rem;width:36px">${i+1}</td>
+      <td style="font-family:'Courier New',monospace;font-size:.78rem;color:var(--t1)">${eq}</td>
+      <td><span class="badge teal">${svgDrop('var(--acc)',false).replace('class="ico-animated"','').replace('width="20" height="26"','width="10" height="13"')} Sem Ajuste</span></td>
+    </tr>`;
+  }).join('');
+
+  document.getElementById('table-g').innerHTML = `
+    <div style="overflow-x:auto">
+      <table class="data-table">
+        <thead><tr><th>#</th><th>Equipamento</th><th>Status</th></tr></thead>
+        <tbody>${rows}</tbody>
+      </table>
+    </div>`;
+}
+
+/* ─── RENDER SELOS ──────────────────────────────────── */
+function renderSelos(rows) {
+  const r = rows[0] || {};
+  const mtbf = parseFloat(String(r['MTBF MÉDIO - Meses']||'0').replace(',','.'))||0;
+
+  /* KPI row 1 */
+  document.getElementById('kpi-s-top').innerHTML = [
+    kpiCard({bar:'c-blue',  icoBg:'rgba(59,130,246,.12)', ico:svgWrench('#60a5fa'),           lbl:'Equipamentos', val:fmt(nv(r['Quantidade de Equipamentos'])), valClass:'c-blue'}),
+    kpiCard({bar:'c-teal',  icoBg:'rgba(0,200,150,.12)',  ico:svgActivity('var(--acc)'),      lbl:'Intervenções', val:fmt(nv(r['Quantidade de Intervenções'])),  valClass:'c-teal'}),
+    kpiCard({bar:'c-amber', icoBg:'rgba(245,158,11,.12)', ico:svgClock('#f59e0b'),             lbl:'MTBF Médio (meses)', val:fmtD(mtbf),                        valClass:'c-amber'}),
+  ].join('');
+
+  /* KPI row 2 */
+  document.getElementById('kpi-s-bot').innerHTML = [
+    kpiCard({bar:'c-green', icoBg:'rgba(34,197,94,.12)',  ico:svgShield('var(--green)'),      lbl:'Operação Normal',      val:fmt(nv(r['Selo Mecânico com operação Normal'])),            valClass:'c-green'}),
+    kpiCard({bar:'c-orange',icoBg:'rgba(249,115,22,.12)', ico:svgDrop('#f97316',true),        lbl:'Vazamento',            val:fmt(nv(r['Selo Mecânico Vazamento'])),                       valClass:'c-orange'}),
+    kpiCard({bar:'c-red',   icoBg:'rgba(239,68,68,.12)',  ico:svgBan('var(--red)'),           lbl:'Fora de Operação',     val:fmt(nv(r['Selo Mecânico Fora de Operação'])),                valClass:'c-red'}),
+    kpiCard({bar:'c-purple',icoBg:'rgba(168,85,247,.12)', ico:svgDrop('var(--purple)',false), lbl:'Prob. Periféricos',    val:fmt(nv(r['Problema em componentes periféricos ao selo'])),   valClass:'c-purple'}),
+  ].join('');
+
+  /* Table — build 3-column list from positional CSV */
+  const detail = rows.slice(2).filter(row => Object.values(row).some(v => v&&v.trim()));
+  const SKIP = new Set(['Vazamento Selo Externo','Problema em componentes periféricos ao selo','Vazamento Selo Interno','Vazamento','Fora de Operação','operação Normal','']);
+  const vazExt=[],perifericos=[],vazInt=[];
+  detail.forEach(row => {
+    const vals = Object.values(row);
+    const v3=(vals[3]||'').trim(), v4=(vals[4]||'').trim(), v5=(vals[5]||'').trim();
+    if (v3 && !SKIP.has(v3)) vazExt.push(v3);
+    if (v4 && !SKIP.has(v4)) perifericos.push(v4);
+    if (v5 && !SKIP.has(v5)) vazInt.push(v5);
+  });
+
+  renderTableS(vazExt, perifericos, vazInt);
+}
+
+function renderTableS(vazExt, perifericos, vazInt) {
+  const PREVIEW = CFG.TABLE_PREVIEW;
+  const maxRows = Math.max(vazExt.length, perifericos.length, vazInt.length);
+  const total   = vazExt.length + perifericos.length + vazInt.length;
+  document.getElementById('meta-s').textContent = `${total} ocorrências`;
+
+  const expandBtn = document.getElementById('expand-s');
+  if (maxRows > PREVIEW) {
+    expandBtn.style.display='flex';
+    expandBtn.innerHTML = S.expanded.s
+      ? `<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="18 15 12 9 6 15"/></svg> Recolher`
+      : `<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg> Ver todos (${maxRows} linhas)`;
+  } else {
+    expandBtn.style.display='none';
+  }
+
+  if (!maxRows) {
+    document.getElementById('table-s').innerHTML='<div class="placeholder">Sem ocorrências registradas.</div>';
+    return;
+  }
+
+  const dropSm = (col) => `<svg width="10" height="13" viewBox="0 0 24 28" fill="none"><path d="M12 2C12 2 3 13 3 18.5A9 9 0 0021 18.5C21 13 12 2 12 2Z" fill="${col}" opacity=".45" stroke="${col}" stroke-width="1.8"/></svg>`;
+
+  const tbody = Array.from({length: maxRows}, (_, i) => {
+    const hidden = i >= PREVIEW && !S.expanded.s ? ' class="row-hidden"' : (i >= PREVIEW ? ' class="row-hidden visible"' : '');
+    return `<tr${hidden}>
+      <td style="color:var(--t3);font-size:.72rem;width:32px">${i+1}</td>
+      <td>${vazExt[i] ? `<span class="badge orange">${dropSm('#f97316')} ${vazExt[i]}</span>` : '<span style="color:var(--t3)">—</span>'}</td>
+      <td>${perifericos[i] ? `<span class="badge purple">${dropSm('var(--purple)')} ${perifericos[i]}</span>` : '<span style="color:var(--t3)">—</span>'}</td>
+      <td>${vazInt[i] ? `<span class="badge red">${dropSm('var(--red)')} ${vazInt[i]}</span>` : '<span style="color:var(--t3)">—</span>'}</td>
+    </tr>`;
+  }).join('');
+
+  document.getElementById('table-s').innerHTML = `
+    <div style="overflow-x:auto">
+      <table class="data-table">
+        <thead><tr>
+          <th>#</th>
+          <th>${dropSm('#f97316')} Vaz. Externo</th>
+          <th>${dropSm('var(--purple)')} Prob. Periféricos</th>
+          <th>${dropSm('var(--red)')} Vaz. Interno</th>
+        </tr></thead>
+        <tbody>${tbody}</tbody>
+      </table>
+    </div>`;
+}
+
+/* ─── EXPAND TOGGLE ─────────────────────────────────── */
+function toggleExpand(which) {
+  S.expanded[which] = !S.expanded[which];
+  const rows = document.querySelectorAll(`#table-${which} .row-hidden`);
+  rows.forEach(r => r.classList.toggle('visible', S.expanded[which]));
+
+  const btn = document.getElementById('expand-'+which);
+  if (S.expanded[which]) {
+    btn.innerHTML = `<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="18 15 12 9 6 15"/></svg> Recolher`;
+  } else {
+    const total = document.querySelectorAll(`#table-${which} tbody tr`).length;
+    btn.innerHTML = `<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg> Ver todos (${total})`;
+    /* scroll back to table top */
+    document.querySelector(`#table-${which}`).closest('.table-box').scrollIntoView({behavior:'smooth',block:'nearest'});
+  }
+}
+
+/* ─── KEYBOARD ──────────────────────────────────────── */
+document.addEventListener('keydown', e => {
+  if (e.key==='Enter') {
+    const ls = document.getElementById('login-screen');
+    if (ls && ls.style.display!=='none') handleLogin();
+  }
+});
+
+/* ════════════════════════════════════════════════════════
+   CHATBOT ENGINE — N8N INTEGRATION
+   Arquitetura:
+   HTML → N8N Webhook → (OpenAI + Redis) → retorno JSON
+   A chave OpenAI fica 100% no N8N (nunca exposta no HTML)
+════════════════════════════════════════════════════════ */
+
+/* ── CONFIG DO CHATBOT ──────────────────────────────── */
+const CHAT_CFG = {
+  /* ▼▼▼ CONFIGURE AQUI OS WEBHOOKS DO N8N ▼▼▼ */
+  N8N_WEBHOOK_GAXETA : 'https://SEU_N8N.railway.app/webhook/chat-gaxeta',
+  N8N_WEBHOOK_SELOS  : 'https://SEU_N8N.railway.app/webhook/chat-selos',
+  N8N_WEBHOOK_SESSION: 'https://SEU_N8N.railway.app/webhook/chat-session-end',
+  /* ▲▲▲ ────────────────────────────────── ▲▲▲ */
+
+  INACTIVITY_MS : 8 * 60 * 1000,   // 8 min → encerra sessão N8N
+  TIMEOUT_WARN_MS: 5 * 60 * 1000,  // 5 min → barra amarela
+  MAX_RETRIES   : 2,
+  TYPING_MIN_MS : 600,
+  TYPING_MAX_MS : 1800,
+};
+
+/* ── ESTADO DO CHATBOT ──────────────────────────────── */
+const CHAT = {
+  open        : false,
+  contract    : null,   // 'gaxeta' | 'selos' | null
+  sessionId   : null,   // UUID gerado no cliente, enviado ao N8N
+  messages    : [],     // histórico local [{role,text,ts}]
+  sending     : false,
+  inactivityTimer : null,
+  timeoutBarTimer : null,
+  timeoutBarStart : null,
+  unloadSent  : false,
+};
+
+/* ── GERA SESSION ID ────────────────────────────────── */
+function genSessionId() {
+  return 'sess_' + Date.now() + '_' + Math.random().toString(36).slice(2, 9);
+}
+
+/* ── ABRE / FECHA CHATBOT ───────────────────────────── */
+function openChatbot() {
+  const overlay = document.getElementById('chatbot-overlay');
+  overlay.classList.add('open');
+  CHAT.open = true;
+  /* Se não há sessão, mostra tela de seleção de contrato */
+  if (!CHAT.contract) showContractSelect();
+  else showChatMessages();
+  document.getElementById('chat-input')?.focus();
+}
+
+function closeChatbot() {
+  document.getElementById('chatbot-overlay').classList.remove('open');
+  CHAT.open = false;
+  /* Notifica N8N que sessão foi encerrada pelo usuário */
+  if (CHAT.sessionId) notifySessionEnd('user_closed');
+}
+
+/* ── SELEÇÃO DE CONTRATO ────────────────────────────── */
+function selectContract(type) {
+  CHAT.contract  = type;
+  CHAT.sessionId = genSessionId();
+  CHAT.messages  = [];
+
+  /* Atualiza badge no header */
+  const badge = document.getElementById('chat-contract-badge');
+  badge.className = 'chat-contract-badge ' + type;
+  badge.textContent = type === 'gaxeta' ? '🔩 Gaxeta' : '⚙️ Selos';
+
+  /* Atualiza subtítulo */
+  const sub = {
+    gaxeta: 'Contrato Gaxeta · Gland Packing',
+    selos : 'Contrato Selos Mecânicos',
+  };
+  document.getElementById('chat-hdr-sub').textContent = sub[type];
+
+  /* Mostra botão reset */
+  document.getElementById('btn-chat-reset').classList.add('visible');
+
+  showChatMessages();
+
+  /* Mensagem de boas-vindas automática do bot */
+  const welcomes = {
+    gaxeta: '✅ Contrato de **Gaxeta** selecionado!\n\nPosso te ajudar com informações sobre equipamentos, ajustes do Preme-Gaxeta, Tags específicos, falhas por período e muito mais.\n\n💡 **Dica:** Seja detalhista na sua pergunta para obter respostas mais precisas!',
+    selos : '✅ Contrato de **Selos Mecânicos** selecionado!\n\nPosso te ajudar com condições operacionais, MTBF, Tags específicos, vazamentos, intervenções e análises por período.\n\n💡 **Dica:** Informe o Tag ou o período que deseja consultar.',
+  };
+  appendBotMessage(welcomes[type], true);
+
+  /* Inicia temporizador de inatividade */
+  resetInactivityTimer();
+  startTimeoutBar();
+}
+
+/* ── RESET / REINICIAR ──────────────────────────────── */
+function chatReset() {
+  if (CHAT.sessionId) notifySessionEnd('user_reset');
+  clearInactivityTimer();
+  clearTimeoutBar();
+  CHAT.contract  = null;
+  CHAT.sessionId = null;
+  CHAT.messages  = [];
+
+  /* Remove badge */
+  const badge = document.getElementById('chat-contract-badge');
+  badge.className = 'chat-contract-badge';
+  badge.textContent = '';
+  document.getElementById('chat-hdr-sub').textContent = 'Selecione um contrato para começar';
+  document.getElementById('btn-chat-reset').classList.remove('visible');
+
+  /* Limpa mensagens */
+  document.getElementById('chat-messages').innerHTML = '';
+
+  showContractSelect();
+}
+
+/* ── EXIBE TELA DE SELEÇÃO ──────────────────────────── */
+function showContractSelect() {
+  document.getElementById('chat-select-screen').style.display = 'flex';
+  document.getElementById('chat-messages').style.display      = 'none';
+  document.getElementById('chat-footer').classList.remove('visible');
+  hideTimeoutBar();
+}
+
+/* ── EXIBE ÁREA DE MENSAGENS ────────────────────────── */
+function showChatMessages() {
+  document.getElementById('chat-select-screen').style.display = 'none';
+  document.getElementById('chat-messages').style.display      = 'flex';
+  document.getElementById('chat-footer').classList.add('visible');
+  showTimeoutBar();
+}
+
+/* ── ADICIONA MENSAGEM DO BOT ───────────────────────── */
+function appendBotMessage(text, fast = false) {
+  const msgs = document.getElementById('chat-messages');
+
+  /* Formata markdown simples: **bold** e quebras de linha */
+  const html = text
+    .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
+    .replace(/\n/g, '<br>');
+
+  const ts = new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+  const row = document.createElement('div');
+  row.className = 'msg-row bot';
+  row.innerHTML = `
+    <div class="msg-avatar">IA</div>
+    <div>
+      <div class="msg-bubble">${html}</div>
+      <div class="msg-time">${ts}</div>
+    </div>`;
+
+  if (fast) {
+    msgs.appendChild(row);
+  } else {
+    /* Mostra typing primeiro */
+    const typingRow = document.createElement('div');
+    typingRow.className = 'msg-row bot';
+    typingRow.id = 'typing-indicator';
+    typingRow.innerHTML = `
+      <div class="msg-avatar">IA</div>
+      <div class="msg-bubble" style="padding:14px 18px">
+        <div class="typing-dots"><span></span><span></span><span></span></div>
+      </div>`;
+    msgs.appendChild(typingRow);
+    chatScrollBottom();
+
+    const delay = CHAT_CFG.TYPING_MIN_MS +
+      Math.random() * (CHAT_CFG.TYPING_MAX_MS - CHAT_CFG.TYPING_MIN_MS);
+    setTimeout(() => {
+      const typing = document.getElementById('typing-indicator');
+      if (typing) typing.remove();
+      msgs.appendChild(row);
+      chatScrollBottom();
+    }, delay);
+  }
+
+  CHAT.messages.push({ role: 'bot', text, ts });
+  chatScrollBottom();
+}
+
+/* ── ADICIONA MENSAGEM DO USUÁRIO ───────────────────── */
+function appendUserMessage(text) {
+  const msgs = document.getElementById('chat-messages');
+  const initials = (document.getElementById('display-user')?.textContent || 'U').charAt(0).toUpperCase();
+  const ts = new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+  const row = document.createElement('div');
+  row.className = 'msg-row user';
+  row.innerHTML = `
+    <div class="msg-avatar">${initials}</div>
+    <div>
+      <div class="msg-bubble">${escHtml(text)}</div>
+      <div class="msg-time" style="text-align:right">${ts}</div>
+    </div>`;
+  msgs.appendChild(row);
+  CHAT.messages.push({ role: 'user', text, ts });
+  chatScrollBottom();
+}
+
+/* ── ENVIA MENSAGEM AO N8N ──────────────────────────── */
+async function chatSend() {
+  if (CHAT.sending) return;
+  const input = document.getElementById('chat-input');
+  const text  = (input.value || '').trim();
+  if (!text) return;
+  if (!CHAT.contract || !CHAT.sessionId) return;
+
+  input.value = '';
+  chatInputResize(input);
+  appendUserMessage(text);
+  hideSuggestions();
+
+  CHAT.sending = true;
+  document.getElementById('btn-chat-send').disabled = true;
+
+  /* Escolhe webhook conforme contrato */
+  const webhookUrl = CHAT.contract === 'gaxeta'
+    ? CHAT_CFG.N8N_WEBHOOK_GAXETA
+    : CHAT_CFG.N8N_WEBHOOK_SELOS;
+
+  /* Payload enviado ao N8N
+     O N8N usa sessionId para buscar/gravar memória no Redis
+     O contrato está no campo "contract" para o N8N rotear ao fluxo correto
+  */
+  const payload = {
+    sessionId  : CHAT.sessionId,
+    contract   : CHAT.contract,
+    message    : text,
+    userName   : document.getElementById('display-user')?.textContent || 'Operador',
+    timestamp  : new Date().toISOString(),
+    portal     : 'Klabin Monte Alegre',
+  };
+
+  /* Exibe typing enquanto aguarda N8N */
+  const typingRow = document.createElement('div');
+  typingRow.className = 'msg-row bot';
+  typingRow.id = 'typing-indicator';
+  typingRow.innerHTML = `
+    <div class="msg-avatar">IA</div>
+    <div class="msg-bubble" style="padding:14px 18px">
+      <div class="typing-dots"><span></span><span></span><span></span></div>
+    </div>`;
+  document.getElementById('chat-messages').appendChild(typingRow);
+  chatScrollBottom();
+
+  let retries = 0;
+  let response = null;
+
+  while (retries <= CHAT_CFG.MAX_RETRIES) {
+    try {
+      const res = await fetch(webhookUrl, {
+        method : 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body   : JSON.stringify(payload),
+      });
+      if (!res.ok) throw new Error('HTTP ' + res.status);
+      const data = await res.json();
+      /* N8N deve retornar: { reply: "texto da resposta" } */
+      response = data.reply || data.message || data.output ||
+        (Array.isArray(data) ? data[0]?.reply || data[0]?.message : null) ||
+        '⚠️ Resposta inválida do servidor.';
+      break;
+    } catch (err) {
+      retries++;
+      if (retries > CHAT_CFG.MAX_RETRIES) {
+        response = '⚠️ Não consegui me conectar ao servidor de IA no momento. Verifique sua conexão e tente novamente.\n\n_Erro técnico: ' + err.message + '_';
+      } else {
+        await new Promise(r => setTimeout(r, 800 * retries));
+      }
+    }
+  }
+
+  /* Remove typing */
+  const typing = document.getElementById('typing-indicator');
+  if (typing) typing.remove();
+
+  if (response) appendBotMessage(response, true);
+
+  CHAT.sending = false;
+  document.getElementById('btn-chat-send').disabled = false;
+  input.focus();
+
+  /* Reinicia temporizador de inatividade a cada mensagem */
+  resetInactivityTimer();
+  startTimeoutBar();
+}
+
+/* ── CHIP DE SUGESTÃO ───────────────────────────────── */
+function chatSuggestion(el) {
+  const input = document.getElementById('chat-input');
+  /* Mapeia ícone → texto de ajuda mais descritivo */
+  const map = {
+    '🏷️ Consultar um Tag específico' : 'Qual o status atual do Tag ',
+    '📅 Falhas por mês/ano'          : 'Quantas falhas ocorreram em ',
+    '📊 Resumo geral do contrato'    : 'Faça um resumo geral do contrato de ',
+    '⚠️ Equipamentos críticos'       : 'Quais são os equipamentos mais críticos do contrato?',
+  };
+  input.value = map[el.textContent] || el.textContent.replace(/^[^\w]+/, '');
+  chatInputResize(input);
+  input.focus();
+  hideSuggestions();
+}
+
+function hideSuggestions() {
+  const s = document.getElementById('chat-suggestions');
+  if (s) s.style.display = 'none';
+}
+
+/* ── NOTIFICA N8N — FIM DE SESSÃO ───────────────────── */
+async function notifySessionEnd(reason) {
+  if (!CHAT.sessionId || CHAT.unloadSent) return;
+  CHAT.unloadSent = true;
+  const payload = {
+    sessionId : CHAT.sessionId,
+    contract  : CHAT.contract,
+    reason    : reason,  // 'user_closed' | 'user_reset' | 'inactivity' | 'page_unload'
+    timestamp : new Date().toISOString(),
+    portal    : 'Klabin Monte Alegre',
+  };
+  try {
+    /* Usa sendBeacon para garantir envio mesmo ao fechar aba */
+    const blob = new Blob([JSON.stringify(payload)], { type: 'application/json' });
+    navigator.sendBeacon(CHAT_CFG.N8N_WEBHOOK_SESSION, blob);
+  } catch(e) {
+    /* Fallback silencioso */
+    try {
+      fetch(CHAT_CFG.N8N_WEBHOOK_SESSION, { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(payload), keepalive:true });
+    } catch(_) {}
+  }
+}
+
+/* ── INATIVIDADE — TEMPORIZADOR 8min ────────────────── */
+function resetInactivityTimer() {
+  clearInactivityTimer();
+  CHAT.inactivityTimer = setTimeout(() => {
+    if (!CHAT.contract) return;
+    /* Avisa o usuário no chat */
+    appendBotMessage('⏱️ Sua sessão foi encerrada por **inatividade** (8 minutos sem interação).\n\nClique em **Reiniciar** para iniciar uma nova conversa.', true);
+    /* Notifica N8N para limpar memória Redis */
+    notifySessionEnd('inactivity');
+    /* Bloqueia input */
+    const input = document.getElementById('chat-input');
+    if (input) { input.disabled = true; input.placeholder = 'Sessão encerrada · Clique em Reiniciar'; }
+    document.getElementById('btn-chat-send').disabled = true;
+    clearTimeoutBar();
+  }, CHAT_CFG.INACTIVITY_MS);
+}
+
+function clearInactivityTimer() {
+  if (CHAT.inactivityTimer) { clearTimeout(CHAT.inactivityTimer); CHAT.inactivityTimer = null; }
+}
+
+/* ── BARRA DE TIMEOUT VISUAL ────────────────────────── */
+function startTimeoutBar() {
+  clearTimeoutBar();
+  const bar  = document.getElementById('chat-timeout-bar');
+  const fill = document.getElementById('chat-timeout-fill');
+  if (!bar || !fill) return;
+
+  bar.classList.add('active');
+  fill.classList.remove('warning');
+  fill.style.width = '100%';
+  fill.style.transition = 'none';
+
+  CHAT.timeoutBarStart = Date.now();
+
+  /* Força reflow antes de aplicar transição */
+  requestAnimationFrame(() => {
+    requestAnimationFrame(() => {
+      fill.style.transition = `width ${CHAT_CFG.INACTIVITY_MS / 1000}s linear`;
+      fill.style.width = '0%';
+    });
+  });
+
+  /* Vira laranja/vermelho quando falta 3 min */
+  CHAT.timeoutBarTimer = setTimeout(() => {
+    fill.classList.add('warning');
+  }, CHAT_CFG.INACTIVITY_MS - 3 * 60 * 1000);
+}
+
+function clearTimeoutBar() {
+  if (CHAT.timeoutBarTimer) { clearTimeout(CHAT.timeoutBarTimer); CHAT.timeoutBarTimer = null; }
+}
+
+function hideTimeoutBar() {
+  const bar = document.getElementById('chat-timeout-bar');
+  if (bar) bar.classList.remove('active');
+  clearTimeoutBar();
+}
+
+function showTimeoutBar() {
+  if (CHAT.contract) startTimeoutBar();
+}
+
+/* ── INPUT AUTO-RESIZE ───────────────────────────────── */
+function chatInputResize(el) {
+  el.style.height = 'auto';
+  el.style.height = Math.min(el.scrollHeight, 140) + 'px';
+}
+
+/* ── KEYDOWN — Enter envia, Shift+Enter nova linha ──── */
+function chatInputKeydown(e) {
+  if (e.key === 'Enter' && !e.shiftKey) {
+    e.preventDefault();
+    chatSend();
+  }
+}
+
+/* ── SCROLL AO FUNDO ────────────────────────────────── */
+function chatScrollBottom() {
+  const body = document.getElementById('chat-body');
+  if (body) requestAnimationFrame(() => { body.scrollTop = body.scrollHeight; });
+}
+
+/* ── HTML ESCAPE ─────────────────────────────────────── */
+function escHtml(str) {
+  return String(str)
+    .replace(/&/g,'&amp;').replace(/</g,'&lt;')
+    .replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+/* ── FECHA OVERLAY AO CLICAR FORA DO MODAL ──────────── */
+document.getElementById('chatbot-overlay').addEventListener('click', function(e) {
+  if (e.target === this) closeChatbot();
+});
+
+/* ── FECHA COM ESC ───────────────────────────────────── */
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape' && CHAT.open) closeChatbot();
+});
+
+/* ── PAGE UNLOAD — notifica N8N ─────────────────────── */
+window.addEventListener('beforeunload', () => {
+  if (CHAT.sessionId && CHAT.contract) {
+    notifySessionEnd('page_unload');
+  }
+});
+window.addEventListener('visibilitychange', () => {
+  if (document.visibilityState === 'hidden' && CHAT.sessionId && CHAT.contract) {
+    notifySessionEnd('page_unload');
+  }
+});
+
+/* ── MOSTRA BOTÃO CHATBOT APÓS LOGIN ─────────────────── */
+/* Executado no DOMContentLoaded para patchear onLoginSuccess */
+document.addEventListener('DOMContentLoaded', () => {
+  /* Injeta exibição do botão IA no fluxo de login bem-sucedido */
+  const origShow = window.__origShowDash || null;
+  const btn = document.getElementById('btn-chatbot');
+  if (btn) btn.style.display = 'none'; /* garante oculto até login */
+});
+</script>
+</body>
+</html>
