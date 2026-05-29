@@ -350,119 +350,41 @@
 
     /* ══ MAYA · ANALISADOR DE CONTRATO ═══════════════════════ */
     .maya-top-btn{
-      position:relative;display:inline-flex;align-items:center;gap:9px;
+      position:fixed;right:28px;bottom:28px;z-index:9998;
+      display:inline-flex;align-items:center;gap:12px;
       border:1px solid rgba(255,255,255,.18);
       background:linear-gradient(135deg,rgba(255,255,255,.16),rgba(255,255,255,.05));
-      color:var(--t1);border-radius:999px;padding:7px 14px 7px 8px;
-      font-size:.74rem;font-weight:900;letter-spacing:.9px;
-      box-shadow:0 8px 26px rgba(0,0,0,.18), inset 0 1px 0 rgba(255,255,255,.14);
+      color:var(--t1);border-radius:999px;padding:14px 24px 14px 14px;
+      font-size:1.02rem;font-weight:900;letter-spacing:1.2px;
+      box-shadow:0 16px 44px rgba(0,0,0,.28), 0 0 32px rgba(0,200,150,.18), inset 0 1px 0 rgba(255,255,255,.14);
       backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);
       transition:transform .22s,box-shadow .22s,border-color .22s,color .22s;
       overflow:hidden;
+      animation:mayaFloatZoom 2.4s ease-in-out infinite;
     }
     .maya-top-btn::before{
       content:'';position:absolute;inset:-1px;
       background:linear-gradient(120deg,transparent,rgba(0,200,150,.24),rgba(59,130,246,.18),transparent);
       transform:translateX(-120%);transition:transform .7s;pointer-events:none;
     }
-    .maya-top-btn:hover{transform:translateY(-2px);border-color:rgba(0,200,150,.45);box-shadow:0 12px 34px rgba(0,200,150,.18), inset 0 1px 0 rgba(255,255,255,.18)}
+    .maya-top-btn:hover{
+      animation-play-state:paused;
+      transform:translateY(-4px) scale(1.08);
+      border-color:rgba(0,200,150,.45);
+      box-shadow:0 20px 56px rgba(0,0,0,.34), 0 0 42px rgba(0,200,150,.24), inset 0 1px 0 rgba(255,255,255,.18);
+    }
     .maya-top-btn:hover::before{transform:translateX(120%)}
     .maya-orb{
-      width:24px;height:24px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;
+      width:38px;height:38px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;
       background:radial-gradient(circle at 30% 30%,#ffffff 0,#bdfcef 18%,var(--acc) 44%,var(--blue) 100%);
-      color:#061018;font-size:.78rem;font-weight:900;box-shadow:0 0 18px rgba(0,200,150,.38);
+      color:#061018;font-size:1.05rem;font-weight:900;box-shadow:0 0 18px rgba(0,200,150,.38);
       animation:mayaPulse 2.6s ease-in-out infinite;flex-shrink:0;
     }
     .maya-top-text{position:relative;z-index:1}
     @keyframes mayaPulse{0%,100%{transform:scale(1);filter:saturate(1)}50%{transform:scale(1.08);filter:saturate(1.25)}}
-
-
-    /* MAYA flutuante — destaque pós-login */
     @keyframes mayaFloatZoom{
-      0%,100%{transform:translateY(0) scale(1)}
-      50%{transform:translateY(-6px) scale(1.075)}
-    }
-    @keyframes mayaGlowRing{
-      0%{opacity:.55;transform:scale(.92)}
-      50%{opacity:.95;transform:scale(1.10)}
-      100%{opacity:.55;transform:scale(.92)}
-    }
-    @keyframes mayaSparkSweep{
-      0%{transform:translateX(-130%) rotate(18deg);opacity:0}
-      35%{opacity:.75}
-      70%,100%{transform:translateX(170%) rotate(18deg);opacity:0}
-    }
-    .maya-floating-btn{
-      position:fixed;right:28px;bottom:30px;z-index:8500;
-      min-width:190px;min-height:74px;padding:12px 18px 12px 12px;
-      display:flex;align-items:center;gap:13px;border-radius:999px;
-      border:1px solid rgba(255,255,255,.24);
-      background:
-        radial-gradient(circle at 18% 16%,rgba(255,255,255,.32),transparent 28%),
-        linear-gradient(135deg,rgba(0,200,150,.96),rgba(59,130,246,.92));
-      color:#061018;
-      box-shadow:
-        0 20px 58px rgba(0,0,0,.42),
-        0 0 42px rgba(0,200,150,.34),
-        inset 0 1px 0 rgba(255,255,255,.36);
-      backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);
-      animation:mayaFloatZoom 2.25s ease-in-out infinite;
-      overflow:hidden;isolation:isolate;
-      transition:transform .22s ease,box-shadow .22s ease,border-color .22s ease,filter .22s ease;
-    }
-    .maya-floating-btn::before{
-      content:'';position:absolute;inset:-8px;border-radius:999px;z-index:-2;
-      background:radial-gradient(circle,rgba(0,200,150,.46),rgba(59,130,246,.18),transparent 70%);
-      animation:mayaGlowRing 2.25s ease-in-out infinite;
-      filter:blur(4px);
-    }
-    .maya-floating-btn::after{
-      content:'';position:absolute;inset:1px;border-radius:999px;z-index:-1;
-      background:linear-gradient(135deg,rgba(255,255,255,.22),rgba(255,255,255,.04));
-      pointer-events:none;
-    }
-    .maya-floating-btn:hover{
-      animation-play-state:paused;
-      transform:translateY(-7px) scale(1.09);
-      box-shadow:
-        0 26px 72px rgba(0,0,0,.52),
-        0 0 62px rgba(0,200,150,.50),
-        0 0 38px rgba(59,130,246,.36),
-        inset 0 1px 0 rgba(255,255,255,.44);
-      filter:saturate(1.12);
-    }
-    .maya-floating-orb{
-      width:48px;height:48px;border-radius:50%;
-      display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;
-      background:radial-gradient(circle at 30% 25%,#fff 0,#c9fff3 20%,var(--acc) 46%,var(--blue) 100%);
-      color:#061018;font-size:1.26rem;font-weight:1000;letter-spacing:-.05em;
-      box-shadow:0 0 24px rgba(255,255,255,.34),0 0 28px rgba(0,200,150,.50);
-    }
-    .maya-floating-copy{
-      display:flex;flex-direction:column;align-items:flex-start;line-height:1.05;position:relative;z-index:1;
-    }
-    .maya-floating-copy strong{
-      font-size:1.12rem;font-weight:1000;letter-spacing:1.7px;color:#061018;
-    }
-    .maya-floating-copy small{
-      margin-top:4px;font-size:.66rem;font-weight:900;letter-spacing:.45px;color:rgba(6,16,24,.76);white-space:nowrap;
-      text-transform:uppercase;
-    }
-    .maya-floating-spark{
-      position:absolute;top:-20%;left:0;width:48px;height:140%;
-      background:linear-gradient(90deg,transparent,rgba(255,255,255,.55),transparent);
-      animation:mayaSparkSweep 3.1s ease-in-out infinite;transform:rotate(18deg);
-      pointer-events:none;
-    }
-    @media(max-width:768px){
-      .maya-floating-btn{right:16px;bottom:18px;min-width:158px;min-height:62px;padding:10px 14px 10px 10px}
-      .maya-floating-orb{width:40px;height:40px;font-size:1.05rem}
-      .maya-floating-copy strong{font-size:.98rem}
-      .maya-floating-copy small{font-size:.56rem}
-    }
-    @media(max-width:430px){
-      .maya-floating-btn{right:12px;bottom:14px;min-width:auto;padding:10px 12px}
-      .maya-floating-copy small{display:none}
+      0%,100%{transform:scale(1)}
+      50%{transform:scale(1.08)}
     }
 
     .maya-overlay{
@@ -604,6 +526,8 @@
       .login-card{padding:32px 22px;margin:10px}
       .topbar-sub{display:none}
       .kpi-top,.kpi-top-3,.kpi-bottom,.kpi-bottom-4{grid-template-columns:1fr 1fr}
+      .maya-top-btn{right:16px;bottom:16px;padding:12px 18px 12px 12px;font-size:.92rem}
+      .maya-orb{width:34px;height:34px;font-size:.98rem}
     }
   </style>
 </head>
@@ -667,19 +591,13 @@
     </div>
     <div class="topbar-right">
       <div class="status-pill"><div class="status-dot"></div><span>Online</span></div>
+      <button class="maya-top-btn" onclick="openMayaAnalyzer()" title="MAYA · Análise de Contrato">
+        <span class="maya-orb">M</span><span class="maya-top-text">MAYA</span>
+      </button>
       <button class="btn-action" onclick="toggleTheme()" id="dash-theme-btn">☀️ Claro</button>
       <button class="btn-logout" onclick="handleLogout()">Sair</button>
     </div>
   </header>
-
-  <button class="maya-floating-btn" onclick="openMayaAnalyzer()" title="MAYA · Análise de Contrato" aria-label="Abrir MAYA · Análise de Contrato">
-    <span class="maya-floating-orb">M</span>
-    <span class="maya-floating-copy">
-      <strong>MAYA</strong>
-      <small>Análise de Contrato</small>
-    </span>
-    <span class="maya-floating-spark" aria-hidden="true"></span>
-  </button>
 
   <!-- ══════════════════════════════════════
        MAYA — ANALISADOR DE CONTRATO
@@ -1428,7 +1346,7 @@ function base64ToBlobUrl(base64, mimeType = 'application/pdf') {
   return URL.createObjectURL(new Blob(chunks, { type: mimeType }));
 }
 
-async async function runContractAnalysis(contractType) {
+async function runContractAnalysis(contractType) {
   const webhookUrl = (CFG.MAYA_WEBHOOK_URL || '').trim();
   const contractLabel = contractType === 'selo' ? 'Selo Mecânico' : 'Contrato de Gaxeta';
   const userName = (document.getElementById('display-user')?.textContent || '').trim() || 'Operador';
